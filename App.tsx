@@ -1,14 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import Store from './src/redux/store';
 import RootContainer from './src/containers/root';
-import Config from 'react-native-config';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+;
+import { SocketProvider } from './src/hooks/useSocket';
+
+
 
 const App = () => {
+
   return (
-    <Provider store={Store}>
-      <RootContainer />
-    </Provider>
-  );
+    <>
+      <SafeAreaProvider>
+
+        <Provider store={Store}>
+          <SocketProvider>
+            <RootContainer />
+          </SocketProvider>
+        </Provider>
+
+      </SafeAreaProvider>
+
+    </>
+  )
 };
 export default App;

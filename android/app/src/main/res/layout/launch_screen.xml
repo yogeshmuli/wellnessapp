@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" android:orientation="vertical" android:layout_width="match_parent" android:layout_height="match_parent" android:background="#A29BFE">    <!-- Set your desired background color here -->
+
+    <ImageView android:layout_width="match_parent" android:layout_height="match_parent" android:src="@drawable/wellness" android:scaleType="centerInside" android:background="#A29BFE" />
+    <!-- Match background color -->
+</RelativeLayout>

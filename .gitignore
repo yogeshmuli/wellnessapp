@@ -1,0 +1,11 @@
+node_modules/
+
+# Build directories
+android/app/build
+ios/build
+# Xcode
+ios/Pods
+ios/Podfile.lock
+# React Native
+.expo
+.expo-shared    

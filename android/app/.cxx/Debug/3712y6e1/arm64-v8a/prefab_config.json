@@ -1,0 +1,10 @@
+{
+  "enabled": true,
+  "prefabPath": "/Users/yogeshmuli/.gradle/caches/modules-2/files-2.1/com.google.prefab/cli/2.1.0/aa32fec809c44fa531f01dcfb739b5b3304d3050/cli-2.1.0-all.jar",
+  "packages": [
+    "/Users/yogeshmuli/.gradle/caches/8.13/transforms/7bf760f81c1cb295cda8edbbfde78c2f/transformed/react-android-0.79.2-debug/prefab",
+    "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-reanimated/android/build/intermediates/prefab_package/debug/prefab",
+    "/Users/yogeshmuli/.gradle/caches/8.13/transforms/6e98cd0ac088266749877810f8f426fa/transformed/hermes-android-0.79.2-debug/prefab",
+    "/Users/yogeshmuli/.gradle/caches/8.13/transforms/30d4a07204326a2e07475aed582192d0/transformed/fbjni-0.7.0/prefab"
+  ]
+}
