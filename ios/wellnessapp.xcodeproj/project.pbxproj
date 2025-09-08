@@ -22,6 +22,7 @@
 		818FDCC4B5C440E6BFCB1A46 /* Poppins-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6941FB0544BA46DF83E0DF46 /* Poppins-SemiBoldItalic.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		90F0914809194908949A61F4 /* Poppins-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0366BAFC939242658F6D600D /* Poppins-ExtraLight.ttf */; };
+		93CA32DD224B42BFB683893B /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 808B8DEFFEF8455BAD0EF952 /* BootSplash.storyboard */; };
 		A4BF7DF1F20D44F5B743E82F /* Poppins-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B705ED14B27047109A39C107 /* Poppins-Black.ttf */; };
 		AF8EFC20FBDF4CD29450E698 /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EC0B462E87F249859D21D00F /* Poppins-Light.ttf */; };
 		B0EEB8B5EF4242879B0A5CA1 /* Poppins-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6111DA871AAA4F8C931EC7CA /* Poppins-ThinItalic.ttf */; };
@@ -31,6 +32,7 @@
 		DC23311FA4DB47A999D51F4C /* Poppins-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B1634D86DAFA49F595750A07 /* Poppins-LightItalic.ttf */; };
 		F21B878536051C0727E4DC91 /* Pods_wellnessapp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4809D5CA2C223970CA2E6FDE /* Pods_wellnessapp.framework */; };
 		F387F7683DA94FD1A1BC6800 /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 981134FC86D04151A6961B7B /* Poppins-Medium.ttf */; };
+		F4ECDD45E92744AA9280789B /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 966AC8EE999F4A7DA3E7B6CF /* Colors.xcassets */; };
 		FDD8155D4FFE4A2FA53F5792 /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 2D39A570A1604E04B9D65D61 /* Poppins-SemiBold.ttf */; };
 /* End PBXBuildFile section */
 
@@ -55,7 +57,9 @@
 		6941FB0544BA46DF83E0DF46 /* Poppins-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBoldItalic.ttf"; path = "../src/assets/fonts/inter/Poppins-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
 		6D0534AC10A04072AAD6599D /* Poppins-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Bold.ttf"; path = "../src/assets/fonts/inter/Poppins-Bold.ttf"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = wellnessapp/AppDelegate.swift; sourceTree = "<group>"; };
+		808B8DEFFEF8455BAD0EF952 /* BootSplash.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = BootSplash.storyboard; path = wellnessapp/BootSplash.storyboard; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = wellnessapp/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		966AC8EE999F4A7DA3E7B6CF /* Colors.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Colors.xcassets; path = wellnessapp/Colors.xcassets; sourceTree = "<group>"; };
 		981134FC86D04151A6961B7B /* Poppins-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Medium.ttf"; path = "../src/assets/fonts/inter/Poppins-Medium.ttf"; sourceTree = "<group>"; };
 		9E879B2B7A1049C4B6B7DBE8 /* Poppins-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Thin.ttf"; path = "../src/assets/fonts/inter/Poppins-Thin.ttf"; sourceTree = "<group>"; };
 		A0236416FCAD46E488072951 /* Poppins-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-MediumItalic.ttf"; path = "../src/assets/fonts/inter/Poppins-MediumItalic.ttf"; sourceTree = "<group>"; };
@@ -88,6 +92,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */,
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
+				808B8DEFFEF8455BAD0EF952 /* BootSplash.storyboard */,
+				966AC8EE999F4A7DA3E7B6CF /* Colors.xcassets */,
 			);
 			name = wellnessapp;
 			sourceTree = "<group>";
@@ -249,6 +255,8 @@
 				45AED03D2E24DF6800333C27 /* GoogleService-Info.plist in Resources */,
 				69E5082BC2664475B8FAD61F /* Poppins-Thin.ttf in Resources */,
 				B0EEB8B5EF4242879B0A5CA1 /* Poppins-ThinItalic.ttf in Resources */,
+				93CA32DD224B42BFB683893B /* BootSplash.storyboard in Resources */,
+				F4ECDD45E92744AA9280789B /* Colors.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

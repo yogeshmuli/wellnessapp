@@ -221,7 +221,7 @@ const MainContainer = () => {
         }
         case "badge_received": {
           let badge = notification.payload.badge;
-          debugger;
+
           let message = {
             title: "New Badge Earned",
             body: `You earned a new badge! ${badge.name}`,

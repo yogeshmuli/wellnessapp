@@ -75,7 +75,7 @@ const TrackPlayerComponent = ({ trackDetails }) => {
       setIsPlaying(event.state === State.Playing);
       setTimeout(() => {
         setPlaybackState(event.state);
-      }, 1000);
+      }, 100);
     }
   });
 
@@ -97,7 +97,6 @@ const TrackPlayerComponent = ({ trackDetails }) => {
       style={{
         width: "100%",
         height: "auto",
-        marginTop: Spacing.medium,
 
         flex: 1,
       }}
@@ -156,6 +155,7 @@ const TrackPlayerComponent = ({ trackDetails }) => {
               color: Colors.lightText,
               fontFamily: Typography.fontFamilyBold,
               fontSize: Typography.fontSizeMedium,
+              marginBottom: Spacing.small,
             }}
           >
             {trackDetails.title}
@@ -272,6 +272,23 @@ const VideoComponent = ({ videoDetails }) => {
           flex: 1,
         }}
       >
+        {isLoading && (
+          <View
+            style={{
+              height: 300,
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 999,
+            }}
+          >
+            <ActivityIndicator size="large" color={Colors.primary} />
+          </View>
+        )}
         {/* {isLoading && <LoadingOverlay visible={isLoading} />} */}
         <Video
           source={{ uri: videoDetails.video.url }}
@@ -415,7 +432,7 @@ const ContentDetails = () => {
       {/* Header  */}
       <View
         style={{
-          padding: Spacing.medium,
+          paddingHorizontal: Spacing.medium,
           flexDirection: "row",
           alignItems: "center",
         }}

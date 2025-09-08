@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { AsyncImage, Avatars } from "../../components/avatars/index";
 import { Spacing, Colors, Typography } from "../../styles";
-import { useRoute } from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { useNavigation } from "@react-navigation/native";
 import {
   fetchChallengeDetails,
@@ -49,6 +49,7 @@ const OverviewTab = ({ challenge }) => {
 const DailyTasksTab = ({ challengeDetails, refreshData }) => {
   const [isModalVisible, setModalVisible] = React.useState(false);
   const [activeTask, setActiveTask] = React.useState(0);
+  const navigation = useNavigation();
 
   const dispatch = useDispatch();
 
@@ -59,12 +60,16 @@ const DailyTasksTab = ({ challengeDetails, refreshData }) => {
 
   const handleTaskPress = (index) => {
     // check if user is enrolled in the challenge
-    if (challengeDetails.challengeStatus === "NOT_ENROLLED") {
-      console.warn("You must join the challenge to update task status.");
-      return;
-    }
-    setActiveTask(index);
-    toggleModal();
+    // if (challengeDetails.challengeStatus === "NOT_ENROLLED") {
+    //   console.warn("You must join the challenge to update task status.");
+    //   return;
+    // }
+    // setActiveTask(index);
+    // toggleModal();
+    navigation.navigate("TaskDetails", {
+      task: challengeDetails.tasks[index],
+      challengeId: challengeDetails.id,
+    });
   };
 
   const handleChangeTaskStatus = async (status) => {
@@ -106,7 +111,7 @@ const DailyTasksTab = ({ challengeDetails, refreshData }) => {
           >
             <TouchableOpacity
               onPress={() => handleTaskPress(index)}
-              style={{ flexDirection: "row", flex: 1 }}
+              style={{ flexDirection: "row", flex: 1, alignItems: "center" }}
             >
               {/* checkbox */}
 
@@ -164,7 +169,7 @@ const DailyTasksTab = ({ challengeDetails, refreshData }) => {
                 >
                   {task.title}
                 </Text>
-                <Text
+                {/* <Text
                   style={{
                     fontFamily: Typography.fontFamilyRegular,
                     fontSize: Typography.fontSizeSmall,
@@ -172,7 +177,7 @@ const DailyTasksTab = ({ challengeDetails, refreshData }) => {
                   }}
                 >
                   {task.description}
-                </Text>
+                </Text> */}
               </View>
             </TouchableOpacity>
           </View>
@@ -591,9 +596,12 @@ const ChallengesDetails = () => {
   const navigation = useNavigation();
   const { challenge } = route.params;
 
-  useEffect(() => {
-    fetchChallenge();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchChallenge();
+    }, [])
+  );
+
   useEffect(() => {
     const onKeyboardShow = () => setKeyboardVisible(true);
     const onKeyboardHide = () => setKeyboardVisible(false);
@@ -666,45 +674,49 @@ const ChallengesDetails = () => {
         </View>
       );
     }
+  };
+
+  const getEnrollmentStatus = () => {
+    if (challengeDetails?.challengeStatus === "NOT_ENROLLED") {
+      return null;
+    }
     if (challengeDetails?.challengeStatus === "ENROLLED") {
       return (
-        <Text
+        <View
           style={{
-            fontFamily: Typography.fontFamilyRegular,
-            fontSize: Typography.fontSizeMedium,
-            color: Colors.success,
-            marginTop: Spacing.large,
-            marginBottom: Spacing.large,
+            backgroundColor: Colors.warning,
+            borderRadius: Spacing.small,
+            padding: Spacing.small,
+            marginHorizontal: Spacing.medium,
+            color: Colors.white,
           }}
         >
-          You have joined this challenge!
-        </Text>
+          <Text style={{ color: Colors.white }}>Enrolled</Text>
+        </View>
       );
     }
     if (challengeDetails?.challengeStatus === "COMPLETED") {
       return (
-        <Text
+        <View
           style={{
-            fontFamily: Typography.fontFamilyRegular,
-            fontSize: Typography.fontSizeMedium,
-            color: Colors.success,
-            marginTop: Spacing.large,
-            marginBottom: Spacing.large,
+            backgroundColor: Colors.success,
+            borderRadius: Spacing.small,
+            padding: Spacing.small,
+            marginHorizontal: Spacing.medium,
           }}
         >
-          You have completed this challenge!
-        </Text>
+          <Text style={{ color: Colors.white }}>Completed</Text>
+        </View>
       );
     }
   };
 
   if (!challengeDetails) {
-    return <LoadingOverlay visible={true} />;
+    return <LoadingOverlay visible={true} message="Fetching Details" />;
   }
 
   return (
     <>
-      <LoadingOverlay visible={loading} />
       <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
         <KeyboardAvoidingView
           enabled
@@ -799,19 +811,31 @@ const ChallengesDetails = () => {
               </View>
             }
             {/* Challenge Title */}
-            <Text
+            <View
               style={{
-                fontSize: Typography.fontSizeMedium,
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-between",
+                width: "100%",
 
-                color: Colors.text,
-                fontFamily: Typography.fontFamilyMedium,
                 marginBottom: Spacing.small,
-                alignSelf: "flex-start",
-                paddingHorizontal: Spacing.medium,
               }}
             >
-              {challenge.title}
-            </Text>
+              <Text
+                style={{
+                  fontSize: Typography.fontSizeMedium,
+
+                  color: Colors.text,
+                  fontFamily: Typography.fontFamilyMedium,
+                  marginBottom: Spacing.small,
+
+                  paddingHorizontal: Spacing.medium,
+                }}
+              >
+                {challenge.title}
+              </Text>
+              {getEnrollmentStatus()}
+            </View>
             {/* Join 1,234 participants on this journey */}
             <Text
               style={{

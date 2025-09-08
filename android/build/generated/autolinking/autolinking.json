@@ -160,6 +160,31 @@
         }
       }
     },
+    "react-native-bootsplash": {
+      "root": "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-bootsplash",
+      "name": "react-native-bootsplash",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-bootsplash/RNBootSplash.podspec",
+          "version": "6.3.10",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": {
+          "sourceDir": "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-bootsplash/android",
+          "packageImportPath": "import com.zoontek.rnbootsplash.RNBootSplashPackage;",
+          "packageInstance": "new RNBootSplashPackage()",
+          "buildTypes": [],
+          "libraryName": "RNBootSplashSpec",
+          "componentDescriptors": [],
+          "cmakeListsPath": "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-bootsplash/android/build/generated/source/codegen/jni/CMakeLists.txt",
+          "cxxModuleCMakeListsModuleName": null,
+          "cxxModuleCMakeListsPath": null,
+          "cxxModuleHeaderName": null,
+          "isPureCxxDependency": false
+        }
+      }
+    },
     "react-native-fast-image": {
       "root": "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-fast-image",
       "name": "react-native-fast-image",
@@ -292,6 +317,19 @@
         }
       }
     },
+    "react-native-render-html": {
+      "root": "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-render-html",
+      "name": "react-native-render-html",
+      "platforms": {
+        "ios": {
+          "podspecPath": "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-render-html/react-native-render-html.podspec",
+          "version": "6.3.4",
+          "configurations": [],
+          "scriptPhases": []
+        },
+        "android": null
+      }
+    },
     "react-native-safe-area-context": {
       "root": "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-safe-area-context",
       "name": "react-native-safe-area-context",
@@ -350,30 +388,6 @@
             "RNSModalScreenComponentDescriptor"
           ],
           "cmakeListsPath": "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-screens/android/src/main/jni/CMakeLists.txt",
-          "cxxModuleCMakeListsModuleName": null,
-          "cxxModuleCMakeListsPath": null,
-          "cxxModuleHeaderName": null,
-          "isPureCxxDependency": false
-        }
-      }
-    },
-    "react-native-splash-screen": {
-      "root": "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-splash-screen",
-      "name": "react-native-splash-screen",
-      "platforms": {
-        "ios": {
-          "podspecPath": "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-splash-screen/react-native-splash-screen.podspec",
-          "version": "3.3.0",
-          "configurations": [],
-          "scriptPhases": []
-        },
-        "android": {
-          "sourceDir": "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-splash-screen/android",
-          "packageImportPath": "import org.devio.rn.splashscreen.SplashScreenReactPackage;",
-          "packageInstance": "new SplashScreenReactPackage()",
-          "buildTypes": [],
-          "componentDescriptors": [],
-          "cmakeListsPath": "/Users/yogeshmuli/codesspace/Eteva/ReactNativeProjects/wellnessapp/node_modules/react-native-splash-screen/android/build/generated/source/codegen/jni/CMakeLists.txt",
           "cxxModuleCMakeListsModuleName": null,
           "cxxModuleCMakeListsPath": null,
           "cxxModuleHeaderName": null,
@@ -483,6 +497,72 @@
     }
   },
   "commands": [
+    {
+      "name": "generate-bootsplash <logo>",
+      "description": "Generate a launch screen using a logo file path (PNG or SVG)",
+      "options": [
+        {
+          "name": "--project-type <string>",
+          "description": "Project type (\"detect\", \"bare\" or \"expo\")",
+          "default": "detect"
+        },
+        {
+          "name": "--platforms <list>",
+          "description": "Platforms to generate for, separated by a comma",
+          "default": "android,ios,web"
+        },
+        {
+          "name": "--background <string>",
+          "description": "Background color (in hexadecimal format)",
+          "default": "#fff"
+        },
+        {
+          "name": "--logo-width <number>",
+          "description": "Logo width at @1x (in dp - we recommend approximately ~100)",
+          "default": 100
+        },
+        {
+          "name": "--assets-output <string>",
+          "description": "Assets output directory path",
+          "default": "assets/bootsplash"
+        },
+        {
+          "name": "--flavor <string>",
+          "description": "Android flavor build variant (where your resource directory is)",
+          "default": "main"
+        },
+        {
+          "name": "--html <string>",
+          "description": "HTML template file path (your web app entry point)",
+          "default": "public/index.html"
+        },
+        {
+          "name": "--license-key <string>",
+          "description": "License key to enable brand and dark mode assets generation"
+        },
+        {
+          "name": "--brand <string>",
+          "description": "Brand file path (PNG or SVG)"
+        },
+        {
+          "name": "--brand-width <number>",
+          "description": "Brand width at @1x (in dp - we recommend approximately ~80)",
+          "default": 80
+        },
+        {
+          "name": "--dark-background <string>",
+          "description": "[dark mode] Background color (in hexadecimal format)"
+        },
+        {
+          "name": "--dark-logo <string>",
+          "description": "[dark mode] Logo file path (PNG or SVG)"
+        },
+        {
+          "name": "--dark-brand <string>",
+          "description": "[dark mode] Brand file path (PNG or SVG)"
+        }
+      ]
+    },
     {
       "name": "bundle",
       "description": "Build the bundle for the provided JavaScript entry file.",

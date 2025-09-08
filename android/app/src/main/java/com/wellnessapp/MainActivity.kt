@@ -5,11 +5,13 @@ import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
-import org.devio.rn.splashscreen.SplashScreen // <-- Add this import
+// import org.devio.rn.splashscreen.SplashScreen // <-- Add this import
+import com.zoontek.rnbootsplash.RNBootSplash
 
 class MainActivity : ReactActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        SplashScreen.show(this) // <-- Show splash screen
+        // SplashScreen.show(this) // <-- Show splash screen
+            RNBootSplash.init(this, R.style.BootTheme) // ⬅️ initialize the splash screen
         super.onCreate(null)
     }
 

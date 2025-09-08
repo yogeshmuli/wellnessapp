@@ -16,7 +16,7 @@ import Toast, { BaseToast, ErrorToast } from "react-native-toast-message";
 import { Typography, Colors } from "../styles";
 import { getAuth, onAuthStateChanged } from "@react-native-firebase/auth";
 import { navigationRef } from "../service/navigation.service";
-import SplashScreen from "react-native-splash-screen";
+import BootSplashScreen from "react-native-bootsplash";
 import { getUser, getUserFeed } from "../redux/thunks/user";
 import { fetchChallenges } from "../redux/thunks/challenge";
 import { fetchFriendRequests, fetchFriendsList } from "../redux/thunks/friends";
@@ -78,7 +78,8 @@ const RootContainer = () => {
     } else if (user) {
       fetchInitialData();
     } else {
-      SplashScreen.hide();
+      // SplashScreen.hide();
+      BootSplashScreen.hide({ fade: true });
     }
   }, [loading]);
 
@@ -92,7 +93,8 @@ const RootContainer = () => {
     } catch {
       console.error("Failed to fetch initial data");
     } finally {
-      SplashScreen.hide();
+      // SplashScreen.hide();
+      BootSplashScreen.hide({ fade: true });
     }
   };
 

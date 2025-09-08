@@ -1473,6 +1473,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-render-html (6.3.4):
+    - React-Core
   - react-native-safe-area-context (5.5.2):
     - DoubleConversion
     - glog
@@ -1597,8 +1599,6 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - react-native-splash-screen (3.3.0):
-    - React-Core
   - react-native-track-player (4.1.2):
     - React-Core
     - SwiftAudioEx (= 1.1.0)
@@ -2023,6 +2023,30 @@ PODS:
     - React-perflogger (= 0.79.2)
     - React-utils (= 0.79.2)
   - RecaptchaInterop (101.0.0)
+  - RNBootSplash (6.3.10):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.11.18.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-hermes
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - RNCAsyncStorage (2.2.0):
     - DoubleConversion
     - glog
@@ -2344,9 +2368,9 @@ DEPENDENCIES:
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-keyboard-controller (from `../node_modules/react-native-keyboard-controller`)
+  - react-native-render-html (from `../node_modules/react-native-render-html`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - "react-native-slider (from `../node_modules/@react-native-community/slider`)"
-  - react-native-splash-screen (from `../node_modules/react-native-splash-screen`)
   - react-native-track-player (from `../node_modules/react-native-track-player`)
   - react-native-video (from `../node_modules/react-native-video`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -2381,6 +2405,7 @@ DEPENDENCIES:
   - ReactAppDependencyProvider (from `build/generated/ios`)
   - ReactCodegen (from `build/generated/ios`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
@@ -2494,12 +2519,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-image-picker"
   react-native-keyboard-controller:
     :path: "../node_modules/react-native-keyboard-controller"
+  react-native-render-html:
+    :path: "../node_modules/react-native-render-html"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-slider:
     :path: "../node_modules/@react-native-community/slider"
-  react-native-splash-screen:
-    :path: "../node_modules/react-native-splash-screen"
   react-native-track-player:
     :path: "../node_modules/react-native-track-player"
   react-native-video:
@@ -2568,6 +2593,8 @@ EXTERNAL SOURCES:
     :path: build/generated/ios
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  RNBootSplash:
+    :path: "../node_modules/react-native-bootsplash"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNFastImage:
@@ -2643,9 +2670,9 @@ SPEC CHECKSUMS:
   React-microtasksnativemodule: 444c5701aece79629bb73bd9e7ad8937ae65238c
   react-native-image-picker: f6ece66f251f4a17aab08f5add7be6eb9e7f5356
   react-native-keyboard-controller: 1477c9b25a65389b8a441c13f9e91852da34fb2e
+  react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
   react-native-safe-area-context: 5e61d0541825a113f60c01e061974355fec8d7c1
   react-native-slider: 0c0125010b5299e647eb5d955b58133fb4eb34e4
-  react-native-splash-screen: 95994222cc95c236bd3cdc59fe45ed5f27969594
   react-native-track-player: dd56f9948e03756a217c75e0a61aa04aab65b5a1
   react-native-video: ec52820be93b9eddea8fa77fa0423588eb2bae9f
   react-native-webview: f0d598682cbc88a97d66da4121873d3467f76635
@@ -2681,6 +2708,7 @@ SPEC CHECKSUMS:
   ReactCodegen: 041559ba76d00f6680dfa0916b3c791f4babe5ea
   ReactCommon: 1511ef100f1afa4c199fe52fe7a8d2529a41429a
   RecaptchaInterop: 11e0b637842dfb48308d242afc3f448062325aba
+  RNBootSplash: 8bfa06c20407e008aa0861498805405c3673b476
   RNCAsyncStorage: c1dca434eda758348a549efb46822b4091d76804
   RNFastImage: 462a183c4b0b6b26fdfd639e1ed6ba37536c3b87
   RNFBApp: 90cf0209fb8f0460ab069a7de857d7ec851c8476

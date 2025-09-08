@@ -9,6 +9,7 @@ import {
 } from "@react-navigation/stack";
 import List from "../pages/challenges/list";
 import Details from "../pages/challenges/details"; // Adjust the import path as necessary
+import TaskDetails from "../pages/challenges/taskdetails";
 const ChallengesStack = createStackNavigator();
 
 const ChallengeContainer = () => {
@@ -19,12 +20,15 @@ const ChallengeContainer = () => {
       }}
     >
       <ChallengesStack.Screen name="ChallengeList" component={List} />
+      <ChallengesStack.Screen name="ChallengeDetails" component={Details} />
       <ChallengesStack.Screen
+        name="TaskDetails"
+        component={TaskDetails}
         options={{
+          gestureDirection: "vertical",
+          gestureEnabled: true,
           cardStyleInterpolator: CardStyleInterpolators.forModalPresentationIOS,
         }}
-        name="ChallengeDetails"
-        component={Details}
       />
     </ChallengesStack.Navigator>
   );
