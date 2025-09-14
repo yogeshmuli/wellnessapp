@@ -7,7 +7,6 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import { Colors } from "../../styles";
 
 export const BottomSheetModal = (props) => {
   const slideAnim = useRef(new Animated.Value(300)).current;

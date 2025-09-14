@@ -1,12 +1,14 @@
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import Text from "../../components/text";
 
 import { Typography, Spacing, Colors } from "../../styles";
 import { SolidButton } from "../../components/buttons";
 import Input from "../../components/inputs";
 import useForm from "../../hooks/useForm"; // <-- Import the hook
 import SafeAreaView from "../../components/safearea";
+import { useTheme } from "../../hooks/useTheme";
 
 // Validation function
 const validate = (name, value, values) => {
@@ -34,12 +36,15 @@ const Signup = () => {
     { email: "", password: "", confirmPassword: "" },
     validate
   );
+  const { Colors } = useTheme();
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.body }}>
+    <SafeAreaView
+      enableBottomPadding
+      style={{ flex: 1, backgroundColor: Colors.bodyBackground }}
+    >
       <KeyboardAwareScrollView
         contentContainerStyle={{
-          flex: 1,
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -54,51 +59,47 @@ const Signup = () => {
             flexDirection: "column",
             justifyContent: "flex-start",
             alignItems: "stretch",
-            backgroundColor: Colors.body,
           }}
         >
           {/* Header */}
           <View
             style={{
-              height: 92,
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "flex-start",
             }}
           >
-            <View
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: 24,
-                backgroundColor: Colors.primary,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <View style={{ alignItems: "center" }}>
               <Text
                 style={{
-                  color: Colors.white,
-                  fontSize: Typography.fontSizeMedium,
+                  fontSize: Typography.fontSizeXLarge,
+                  marginHorizontal: Spacing.large,
+                  marginBottom: Spacing.small,
                   fontFamily: Typography.fontFamilyBold,
+                  color: Colors.text,
+                  textAlign: "center",
                 }}
               >
-                1
+                Step Into The Brotherhood
+              </Text>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: Colors.text,
+                  fontFamily: Typography.fontFamily,
+                  lineHeight: 30,
+                  textAlign: "center",
+                  width: 320,
+                }}
+              >
+                Join a community of men committed to mastering health, mindset,
+                relationships, and freedom.
               </Text>
             </View>
+
             <View style={{ height: 16 }}></View>
-            <Text
-              style={{
-                fontSize: Typography.fontSizeLarge,
-                fontFamily: Typography.fontFamilyBold,
-                color: Colors.textPrimary,
-                marginTop: Spacing.small,
-              }}
-            >
-              Tell us about yourself
-            </Text>
           </View>
-          <View style={{ height: 32 }}></View>
+
           {/* Form */}
           <View
             style={{
@@ -137,25 +138,16 @@ const Signup = () => {
               error={errors.confirmPassword}
             />
             <View style={{ height: 30 }}></View>
-            {/* Next btn */}
-            <SolidButton
-              title="Next"
-              onPress={() =>
-                handleSubmit((formValues) => {
-                  navigation.navigate("SignupDetails", { ...formValues });
-                })
-              }
-            />
             {/* Already have account go to signin */}
-            <View style={{ height: 16 }}></View>
+
             <View>
               <TouchableOpacity onPress={() => navigation.navigate("Signin")}>
                 <Text
                   style={{
-                    fontSize: Typography.fontSizeSmall,
-                    color: Colors.gray,
+                    color: Colors.lightText,
                     textAlign: "center",
                     fontFamily: Typography.fontFamily,
+                    fontSize: 14,
                   }}
                 >
                   Already have an account?{" "}
@@ -163,6 +155,7 @@ const Signup = () => {
                     style={{
                       color: Colors.primary,
                       fontFamily: Typography.fontFamilyBold,
+                      fontSize: 14,
                     }}
                   >
                     Sign In
@@ -170,6 +163,17 @@ const Signup = () => {
                 </Text>
               </TouchableOpacity>
             </View>
+            <View style={{ height: 20 }}></View>
+            {/* Next btn */}
+            <SolidButton
+              title="Next"
+              onPress={() => {
+                handleSubmit((formValues) => {
+                  navigation.navigate("SignupDetails", { ...formValues });
+                });
+              }}
+            />
+            <View style={{ height: 20 }}></View>
           </View>
         </View>
       </KeyboardAwareScrollView>

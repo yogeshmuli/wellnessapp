@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Modal, TouchableOpacity, ScrollView } from "react-native";
+import { View, Modal, TouchableOpacity, ScrollView } from "react-native";
+import Text from "../../components/text";
 import { useDispatch } from "react-redux";
 import { getUser, getOtherUser } from "../../redux/thunks/user";
 import LoadingOverlay from "../../components/loadingOverlay";
@@ -8,8 +9,12 @@ import { Avatars } from "../../components/avatars";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { launchImageLibrary, launchCamera } from "react-native-image-picker";
-import { CustomEditableInput, MultiSelectInput } from "../../components/inputs";
-import { Colors, Typography, Spacing } from "../../styles";
+import {
+  CustomEditableInput,
+  CustomInput,
+  SelectInput,
+} from "../../components/inputs";
+import { Typography, Spacing } from "../../styles";
 import { SolidButton } from "../../components/buttons";
 import { Interests as InterestsConstant } from "../../constants/index";
 import { updateUserProfile } from "../../redux/thunks/user";
@@ -25,6 +30,9 @@ import {
 
 import SafeAreaView from "../../components/safearea";
 import Store from "../../redux/store";
+import ProgressBar from "../../components/progressbar";
+import { getColorByFocusArea } from "../../utils/helpers";
+import { useTheme } from "../../hooks/useTheme";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -33,8 +41,13 @@ const Profile = () => {
   const [pickedImage, setPickedImage] = useState(null);
   const [isEditingView, setIsEditingView] = useState(false);
   const [isPersonalProfile, setIsPersonalProfile] = useState(false);
+  const [theme, setTheme] = useState({
+    label: "Light",
+    value: "light",
+  });
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const { Colors, getActiveTheme, changeTheme } = useTheme();
 
   const route = useRoute();
 
@@ -50,7 +63,15 @@ const Profile = () => {
     } else {
       setIsPersonalProfile(false);
     }
+    getActiveTheme().then((themePreference) => {
+      setTheme({
+        label: themePreference === "dark" ? "Dark" : "Light",
+        value: themePreference,
+      });
+    });
   }, [route.params]);
+
+  // Handle theme change
 
   // Fetch profile data here, e.g., using a Redux action
   const fetchProfile = async () => {
@@ -97,6 +118,11 @@ const Profile = () => {
       setLoading(false);
       console.error("Failed to update profile:", error);
     }
+  };
+
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme);
+    changeTheme(newTheme.value);
   };
   const onConnect = async () => {
     try {
@@ -191,13 +217,6 @@ const Profile = () => {
     return { uri: pickedImage };
   };
 
-  const mapMultiSelectOptions = (options) => {
-    return options.map((option) => ({
-      label: option,
-      value: option,
-    }));
-  };
-
   const getButtonComponent = () => {
     if (isPersonalProfile && !isEditingView) {
       return (
@@ -208,19 +227,25 @@ const Profile = () => {
             onPress={() => setIsEditingView(true)}
           />
           <SolidButton
+            icon={
+              <Ionicons
+                name="log-out"
+                size={16}
+                color={Colors.text}
+                style={{ marginRight: 8 }}
+              />
+            }
             title="Logout"
             style={{
               marginTop: Spacing.medium,
               width: "100%",
-              backgroundColor: Colors.transparent,
-              borderWidth: 2,
-              borderColor: Colors.lightText,
+              backgroundColor: Colors.error,
+              borderWidth: 0,
+
               borderRadius: 12,
-              borderStyle: "solid",
             }}
             textStyle={{
-              color: Colors.lightText,
-              fontFamily: Typography.fontFamilyMedium,
+              color: Colors.text,
             }}
             onPress={onLogout}
           />
@@ -318,345 +343,594 @@ const Profile = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bodyBackground }}>
       <LoadingOverlay visible={loading} />
-      {/* Back Button */}
-      <View
-        style={{
-          padding: Spacing.medium,
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-      >
-        <TouchableOpacity
-          style={{ flexDirection: "row", alignItems: "center" }}
-          onPress={() => navigation.goBack()}
-        >
-          <Icon name="chevron-left" size={24} color={Colors.black} />
-          <Text
-            style={{
-              fontSize: Typography.fontSizeLarge,
-              fontWeight: "bold",
-              marginLeft: Spacing.small,
-            }}
-          >
-            {isPersonalProfile ? "My Profile" : "Profile"}
-          </Text>
-        </TouchableOpacity>
-      </View>
-      <ScrollView
-        contentContainerStyle={{ flex: 1 }}
-        keyboardShouldPersistTaps="handled"
-      >
+      <View style={{ flex: 1, width: "100%", paddingHorizontal: 17.5 }}>
+        {/* Back Button */}
         <View
           style={{
-            flex: 1,
+            paddingVertical: Spacing.small,
+            flexDirection: "row",
             alignItems: "center",
-            justifyContent: "flex-start",
-            flexDirection: "column",
-            padding: Spacing.large,
           }}
         >
-          {/* Avatar */}
-          {pickedImage ? (
-            <Avatars
-              size={100}
-              imageSource={getImageSource()}
-              secondaryComponent={
-                isEditingView
-                  ? () => (
-                      <TouchableOpacity onPress={() => setModalVisible(true)}>
-                        <Icon name="camera" size={20} color="#fff" />
-                      </TouchableOpacity>
-                    )
-                  : null
-              }
-            />
-          ) : (
-            <View
+          <TouchableOpacity
+            style={{ flexDirection: "row", alignItems: "center" }}
+            onPress={() => navigation.goBack()}
+          >
+            {!isPersonalProfile && (
+              <Icon name="chevron-left" size={24} color={Colors.text} />
+            )}
+            <Text
               style={{
-                height: 100,
-                width: 100,
-                borderRadius: 50,
+                fontSize: Typography.fontSizeLarge,
+                fontWeight: "bold",
+                marginLeft: Spacing.small,
               }}
             >
-              <Ionicons
-                name="person-circle-outline"
-                size={100}
-                color={Colors.gray}
-              />
-              {isEditingView && (
-                <View
-                  style={{
-                    position: "absolute",
-                    bottom: 0,
-                    right: 0,
-                    backgroundColor: Colors.primary,
-                    borderRadius: 100 / 4,
-                    padding: 8,
-                  }}
-                >
-                  <TouchableOpacity onPress={() => setModalVisible(true)}>
-                    <Icon name="camera" size={20} color="#fff" />
-                  </TouchableOpacity>
-                </View>
-              )}
-            </View>
-          )}
-          {/* Name */}
-          <CustomEditableInput
-            disableEditing={isEditingView ? false : true}
-            style={{
-              marginTop: Spacing.large,
-              paddingHorizontal: Spacing.medium,
-            }}
-            iconColor={Colors.black}
-            textStyle={{
-              fontSize: Typography.fontSizeLarge,
-
-              color: Colors.text,
-              fontFamily: Typography.fontFamilyBold,
-            }}
-            inputStyle={{
-              fontSize: Typography.fontSizeLarge,
-
-              color: Colors.text,
-              fontFamily: Typography.fontFamilyBold,
-            }}
-            value={profile?.displayName}
-            onChangeText={(text) => {
-              setProfile({ ...profile, displayName: text });
-            }}
-          />
-          {/* Tag line */}
-          <CustomEditableInput
-            disableEditing={isEditingView ? false : true}
-            style={{
-              marginTop: Spacing.medium,
-              paddingHorizontal: Spacing.medium,
-            }}
-            iconColor={Colors.black}
-            textStyle={{
-              fontSize: Typography.fontSizeMedium,
-              color: Colors.lightText,
-            }}
-            inputStyle={{
-              fontSize: Typography.fontSizeMedium,
-              color: Colors.lightText,
-            }}
-            value={profile?.tagLine}
-            onChangeText={(text) => {
-              setProfile({ ...profile, tagLine: text });
-            }}
-          />
-          {/* Mutliselect  for interest*/}
+              {isPersonalProfile ? "My Profile" : "Profile"}
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <ScrollView
+          style={{ flex: 1 }}
+          contentContainerStyle={{}}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
           <View
             style={{
-              alignSelf: "flex-start",
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "flex-start",
+              flexDirection: "column",
+              paddingHorizontal: 0,
             }}
           >
-            <MultiSelectInput
-              disableEditing={isEditingView ? false : true}
-              label={"Interests"}
-              labelStyle={{
-                fontSize: Typography.fontSizeMedium,
-                color: Colors.text,
-                fontFamily: Typography.fontFamilyMedium,
-                marginBottom: Spacing.small,
-              }}
-              options={mapMultiSelectOptions(InterestsConstant)}
-              onChange={(selectedItems) => {
-                let updatedInterests = selectedItems.map((item) => item.value);
-                setProfile({ ...profile, interests: updatedInterests });
-              }}
-              style={{
-                marginTop: Spacing.medium,
-                paddingHorizontal: Spacing.medium,
-              }}
-              selected={
-                profile?.interests
-                  ? mapMultiSelectOptions(profile.interests)
-                  : []
-              }
-            />
-          </View>
-          {/* Ui for showing badges */}
-          {/* label for badges */}
-          <Text
-            style={{
-              fontSize: Typography.fontSizeMedium,
-              color: Colors.text,
-              fontFamily: Typography.fontFamilyMedium,
-              marginTop: Spacing.medium,
-              alignSelf: "flex-start",
-            }}
-          >
-            Badges
-          </Text>
-          {profile?.badges && profile?.badges.length > 0 ? (
+            {/* Avtar div */}
             <View
               style={{
-                flexDirection: "row",
-
-                flexWrap: "wrap",
-                marginTop: Spacing.medium,
-                justifyContent: "space-between",
-                alignSelf: "flex-start",
+                backgroundColor: Colors.cardBackground,
+                height: 213,
+                width: "100%",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                paddingTop: Spacing.medium,
               }}
             >
-              <ScrollView
-                style={{
-                  maxHeight: 200,
-                }}
-                contentContainerStyle={{
-                  flexDirection: "row",
-
-                  flexWrap: "wrap",
-
-                  justifyContent: "space-between",
-                  alignSelf: "flex-start",
-
-                  // minHeight: 100,
-                  // width: "100%",
-                }}
-                vertical
-              >
-                {[...profile?.badges].map((badge, index) => {
-                  // use Avatars to show images and text at bottom
-                  return (
+              {pickedImage ? (
+                <Avatars
+                  size={96}
+                  imageSource={getImageSource()}
+                  secondaryComponent={
+                    isEditingView
+                      ? () => (
+                          <TouchableOpacity
+                            onPress={() => setModalVisible(true)}
+                          >
+                            <Icon name="camera" size={18} color="#fff" />
+                          </TouchableOpacity>
+                        )
+                      : null
+                  }
+                />
+              ) : (
+                <View
+                  style={{
+                    height: 96,
+                    width: 96,
+                    borderRadius: 50,
+                  }}
+                >
+                  <Ionicons
+                    name="person-circle-outline"
+                    size={100}
+                    color={Colors.text}
+                  />
+                  {isEditingView && (
                     <View
-                      key={index}
                       style={{
-                        alignItems: "center",
-
-                        width: 65,
-                        marginRight: Spacing.small,
+                        position: "absolute",
+                        bottom: 0,
+                        right: 0,
+                        backgroundColor: Colors.primary,
+                        borderRadius: 100 / 4,
+                        padding: 8,
                       }}
                     >
-                      <Avatars
-                        key={index}
-                        size={64}
-                        nestedImageSize={24}
-                        imageSource={{
-                          uri: badge.imageUrl,
-                        }}
-                      />
-                      <Text
-                        style={{
-                          fontSize: Typography.fontSizeSmall,
-                          color: Colors.text,
-                          textAlign: "center",
-                          marginVertical: Spacing.small,
-                          fontFamily: Typography.fontFamilyRegular,
-                        }}
-                      >
-                        {badge.name || "Badge Name"}
-                      </Text>
+                      <TouchableOpacity onPress={() => setModalVisible(true)}>
+                        <Icon name="camera" size={18} color="#fff" />
+                      </TouchableOpacity>
                     </View>
-                  );
-                })}
-              </ScrollView>
+                  )}
+                </View>
+              )}
+              {/* Name */}
+              <CustomEditableInput
+                disableEditing={isEditingView ? false : true}
+                style={{
+                  paddingHorizontal: Spacing.medium,
+                  width: "100%",
+                }}
+                iconColor={Colors.text}
+                textStyle={{
+                  fontSize: 24,
+                  lineHeight: 32,
+
+                  color: Colors.text,
+
+                  textAlign: "center",
+                }}
+                inputStyle={{
+                  fontSize: 24,
+                  lineHeight: 32,
+                  fontFamily: Typography.fontFamilyMedium,
+                  color: Colors.text,
+                }}
+                value={profile?.displayName}
+                onChangeText={(text) => {
+                  setProfile({ ...profile, displayName: text });
+                }}
+              />
+              {/* Tag line */}
+              <CustomEditableInput
+                disableEditing={isEditingView ? false : true}
+                style={{
+                  paddingHorizontal: Spacing.medium,
+                  width: "60%",
+                }}
+                iconColor={Colors.text}
+                textStyle={{
+                  fontSize: 14,
+                  color: Colors.lightText,
+
+                  textAlign: "center",
+                }}
+                inputStyle={{
+                  fontSize: 14,
+                  color: Colors.lightText,
+                }}
+                value={profile?.tagLine ?? "Brotherhood Elite Member"}
+                onChangeText={(text) => {
+                  setProfile({ ...profile, tagLine: text });
+                }}
+              />
             </View>
-          ) : (
+            <View style={{ height: 13 }}></View>
+            {/* Progress Div */}
             <View
               style={{
-                flexDirection: "row",
-
-                marginTop: Spacing.medium,
-                justifyContent: "center",
-                alignSelf: "flex-start",
-                alignItems: "center",
-                minHeight: 100,
+                backgroundColor: Colors.cardBackground,
+                height: 200,
                 width: "100%",
-                backgroundColor: Colors.grayBg,
+                justifyContent: "flex-start",
+                alignItems: "center",
+                paddingTop: Spacing.medium,
+                paddingHorizontal: 17,
+                borderRadius: 12,
               }}
             >
               <Text
                 style={{
-                  fontFamily: Typography.fontFamilyRegular,
-                  fontSize: Typography.fontSizeMedium,
-                  color: Colors.lightText,
+                  fontSize: 18,
+                  color: Colors.primary,
+                  paddingTop: 0,
+                  alignSelf: "flex-start",
                 }}
               >
-                No badges earned yet
+                Progress Snapshot{" "}
               </Text>
-            </View>
-          )}
-
-          <View style={{ height: Spacing.xLarge }}></View>
-
-          <View
-            style={{
-              width: "100%",
-              bottom: 0,
-              flex: 1,
-              flexDirection: "column",
-              justifyContent: "flex-end",
-            }}
-          >
-            {getButtonComponent()}
-          </View>
-
-          {/* Modal for image options */}
-          <Modal
-            visible={modalVisible}
-            transparent
-            animationType="fade"
-            onRequestClose={() => setModalVisible(false)}
-          >
-            <TouchableOpacity
-              style={{
-                flex: 1,
-                backgroundColor: "rgba(0,0,0,0.3)",
-                justifyContent: "flex-end",
-              }}
-              activeOpacity={1}
-              onPress={() => setModalVisible(false)}
-            >
+              {/* row 1 */}
               <View
                 style={{
-                  backgroundColor: "#fff",
-                  padding: 24,
-                  borderTopLeftRadius: 16,
-                  borderTopRightRadius: 16,
+                  flexDirection: "row",
+
+                  justifyContent: "space-between",
+                  width: "100%",
                 }}
               >
-                <Text
-                  style={{ fontSize: 18, fontWeight: "bold", marginBottom: 16 }}
-                >
-                  Select Image
-                </Text>
-                <TouchableOpacity
+                <View
                   style={{
-                    paddingVertical: 12,
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#eee",
+                    flex: 1,
+                    flexDirection: "column",
+                    alignItems: "center",
                   }}
-                  onPress={handlePickImage}
                 >
-                  <Text style={{ fontSize: 16 }}>Choose from Gallery</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                  <Text
+                    style={{
+                      color: Colors.q4,
+                      fontSize: 24,
+                      paddingBottom: 2,
+                    }}
+                  >
+                    {profile?.points || 0}
+                  </Text>
+                  <Text
+                    style={{
+                      color: Colors.lightText,
+                      fontSize: 14,
+                    }}
+                  >
+                    Points
+                  </Text>
+                </View>
+                <View
                   style={{
-                    paddingVertical: 12,
-                    borderBottomWidth: 1,
-                    borderBottomColor: "#eee",
+                    flex: 1,
+                    flexDirection: "column",
+                    alignItems: "center",
                   }}
-                  onPress={handleOpenCamera}
                 >
-                  <Text style={{ fontSize: 16 }}>Open Camera</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={{ paddingVertical: 12 }}
-                  onPress={() => setModalVisible(false)}
-                >
-                  <Text style={{ fontSize: 16, color: "red" }}>Cancel</Text>
-                </TouchableOpacity>
+                  <Text
+                    style={{
+                      color: Colors.primary,
+                      fontSize: 24,
+                      paddingBottom: 2,
+                    }}
+                  >
+                    {profile?.highestStreak || 0}
+                  </Text>
+                  <Text
+                    style={{
+                      color: Colors.lightText,
+                      fontSize: 14,
+                    }}
+                  >
+                    Day Streak
+                  </Text>
+                </View>
               </View>
-            </TouchableOpacity>
-          </Modal>
-        </View>
-      </ScrollView>
+              {/* row 2 */}
+              <View
+                style={{
+                  flexDirection: "row",
+                  marginTop: 2,
+                  justifyContent: "space-between",
+                  width: "100%",
+                }}
+              >
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: Colors.primary,
+                      fontSize: 24,
+                      paddingBottom: 2,
+                    }}
+                  >
+                    {profile?.challengeCount || 0}
+                  </Text>
+                  <Text
+                    style={{
+                      color: Colors.lightText,
+                      fontSize: 14,
+                    }}
+                  >
+                    Challenges
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: "column",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: Colors.q2,
+                      fontSize: 24,
+                      paddingBottom: 2,
+                    }}
+                  >
+                    {profile?.communityLevel || "-"}
+                  </Text>
+                  <Text
+                    style={{
+                      color: Colors.lightText,
+                      fontSize: 14,
+                    }}
+                  >
+                    Brotherhood Level
+                  </Text>
+                </View>
+              </View>
+            </View>
+            {/* Age Div */}
+            <View
+              style={{
+                height: 82,
+                backgroundColor: Colors.cardBackground,
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+
+                paddingHorizontal: 17,
+                borderRadius: 12,
+                marginTop: Spacing.medium,
+              }}
+            >
+              <CustomInput
+                label={"Age"}
+                suffix={"Years"}
+                disableEditing={isEditingView ? false : true}
+                value={profile?.age ? profile.age.toString() : "25"}
+                onChangeText={(text) =>
+                  setProfile({ ...profile, age: parseInt(text) })
+                }
+              />
+            </View>
+            {/* Height */}
+            <View
+              style={{
+                height: 82,
+                backgroundColor: Colors.cardBackground,
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+
+                paddingHorizontal: 17,
+                borderRadius: 12,
+                marginTop: Spacing.medium,
+              }}
+            >
+              <CustomInput
+                label={"Height"}
+                suffix={"Cms"}
+                disableEditing={isEditingView ? false : true}
+                value={profile?.height ? profile.height.toString() : "0"}
+                onChangeText={(text) =>
+                  setProfile({ ...profile, height: parseInt(text) })
+                }
+              />
+            </View>
+            {/* Weight */}
+            <View
+              style={{
+                height: 82,
+                backgroundColor: Colors.cardBackground,
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+
+                paddingHorizontal: 17,
+                borderRadius: 12,
+                marginTop: Spacing.medium,
+              }}
+            >
+              <CustomInput
+                label={"Weight"}
+                suffix={"Kgs"}
+                disableEditing={isEditingView ? false : true}
+                value={profile?.weight ? profile.weight.toString() : "0"}
+                onChangeText={(text) =>
+                  setProfile({ ...profile, weight: parseInt(text) })
+                }
+              />
+            </View>
+            {/* Quadarant Progrees */}
+            <View
+              style={{
+                backgroundColor: Colors.cardBackground,
+                height: 254,
+                width: "100%",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                marginTop: Spacing.medium,
+                paddingTop: Spacing.medium,
+                paddingHorizontal: 17,
+                borderRadius: 12,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: Colors.primary,
+                  paddingTop: 0,
+                  alignSelf: "flex-start",
+                }}
+              >
+                Life Quadrants{" "}
+              </Text>
+
+              {profile?.focusAreaProgress &&
+                profile?.focusAreaProgress.length > 0 &&
+                profile.focusAreaProgress.map((item, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      height: 40,
+                      width: "100%",
+                      flexDirection: "column",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      marginBottom: Spacing.small,
+                    }}
+                  >
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        width: "100%",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          fontSize: 14,
+                        }}
+                      >
+                        {item.label}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 14,
+                        }}
+                      >
+                        {parseInt(item.totalProgress) || 0}%
+                      </Text>
+                    </View>
+                    {/* Progress bar */}
+                    <View
+                      style={{
+                        width: "100%",
+
+                        paddingHorizontal: Spacing.small,
+                      }}
+                    >
+                      <ProgressBar
+                        progress={parseInt(item.totalProgress) || 0}
+                        color={getColorByFocusArea(item.name)}
+                      />
+                    </View>
+                  </View>
+                ))}
+            </View>
+            {/* Theme Preference */}
+            <View
+              style={{
+                height: 120,
+                backgroundColor: Colors.cardBackground,
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+
+                paddingHorizontal: 17,
+                borderRadius: 12,
+                marginTop: Spacing.medium,
+              }}
+            >
+              <SelectInput
+                label="Theme Preference"
+                options={[
+                  {
+                    label: "Light",
+                    value: "light",
+                  },
+                  { label: "Dark", value: "dark" },
+                ]}
+                placeholder="Select your theme"
+                value={theme}
+                onChange={handleThemeChange}
+              />
+            </View>
+
+            {/* Email div */}
+
+            <View
+              style={{
+                height: 82,
+                backgroundColor: Colors.cardBackground,
+                width: "100%",
+                justifyContent: "center",
+                alignItems: "center",
+
+                paddingHorizontal: 17,
+                borderRadius: 12,
+                marginTop: Spacing.medium,
+              }}
+            >
+              <CustomInput
+                label={"Email"}
+                disableEditing={true}
+                value={
+                  profile?.email
+                    ? profile.email.toString()
+                    : "example@example.com"
+                }
+                onChangeText={(text) => setProfile({ ...profile, email: text })}
+              />
+            </View>
+
+            <View
+              style={{
+                width: "100%",
+                bottom: 0,
+                flex: 1,
+                flexDirection: "column",
+                justifyContent: "flex-end",
+                marginBottom: Spacing.large,
+              }}
+            >
+              {getButtonComponent()}
+            </View>
+
+            {/* Modal for image options */}
+            <Modal
+              visible={modalVisible}
+              transparent
+              animationType="fade"
+              onRequestClose={() => setModalVisible(false)}
+            >
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  backgroundColor: "rgba(0,0,0,0.3)",
+                  justifyContent: "flex-end",
+                }}
+                activeOpacity={1}
+                onPress={() => setModalVisible(false)}
+              >
+                <View
+                  style={{
+                    backgroundColor: Colors.cardBackground,
+                    padding: 24,
+                    borderTopLeftRadius: 16,
+                    borderTopRightRadius: 16,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 18,
+                        fontWeight: "bold",
+                        marginBottom: 16,
+                      }}
+                    >
+                      Select Image
+                    </Text>
+                    <TouchableOpacity onPress={() => setModalVisible(false)}>
+                      <Ionicons name="close" size={24} color={Colors.text} />
+                    </TouchableOpacity>
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      padding: 12,
+                      backgroundColor: Colors.lightBodyBackground,
+                      borderRadius: 8,
+                    }}
+                    onPress={handlePickImage}
+                  >
+                    <Text style={{ fontSize: 16 }}>Choose from Gallery</Text>
+                  </TouchableOpacity>
+                  <View style={{ height: Spacing.medium }}></View>
+                  <TouchableOpacity
+                    style={{
+                      padding: 12,
+                      backgroundColor: Colors.lightBodyBackground,
+                      borderRadius: 8,
+                    }}
+                    onPress={handleOpenCamera}
+                  >
+                    <Text style={{ fontSize: 16 }}>Open Camera</Text>
+                  </TouchableOpacity>
+                  <View style={{ height: Spacing.large }}></View>
+                </View>
+              </TouchableOpacity>
+            </Modal>
+          </View>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };

@@ -14,3 +14,10 @@ subprojects {
         }
     }
 }
+
+<!-- command to generate splashscreen bootsplash -->
+npx react-native-bootsplash generate assets/logos/svg.svg\
+  --platforms=android,ios \
+  --background=F5FCFF \
+  --logo-width=100 \
+  --assets-output=assets/bootsplash 

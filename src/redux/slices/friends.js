@@ -1,16 +1,24 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchFriendRequests, fetchFriendsList } from "../thunks/friends";
+import { RESET_APP } from "./global";
+
+const initialState = {
+  friendRequests: [],
+  friendsList: [],
+  loading: false,
+  error: null,
+};
 
 const friendsSlice = createSlice({
   name: "friendsSlice",
-  initialState: {
-    friendRequests: [],
-    friendsList: [],
-    loading: false,
-  },
+  initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(RESET_APP, (state) => {
+        state = initialState;
+      })
+
       .addCase(fetchFriendRequests.pending, (state) => {
         state.loading = true;
       })

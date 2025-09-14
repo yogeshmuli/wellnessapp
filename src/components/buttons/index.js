@@ -1,6 +1,7 @@
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
-import { Colors, Typography } from "../../styles";
+import { Typography } from "../../styles";
+import { useTheme } from "../../hooks/useTheme";
 
 export const OutlinedButton = ({
   title,
@@ -12,6 +13,7 @@ export const OutlinedButton = ({
 
   disabled = false,
 }) => {
+  const { Colors } = useTheme();
   return (
     <TouchableOpacity
       onPress={onPress}
@@ -49,22 +51,24 @@ export const OutlinedButton = ({
 export const SolidButton = ({
   title,
   icon,
+  icon2,
   onPress,
   style = {},
   textStyle = {},
   iconStyle = {},
   disabled = false,
 }) => {
+  const { Colors } = useTheme();
   return (
     <TouchableOpacity
       onPress={onPress}
       style={{
-        height: 50,
+        height: 56,
         backgroundColor: Colors.primary,
         borderRadius: 12,
         display: "flex",
         flexDirection: "row",
-        // width: "100%",
+        // width: 352,
         alignItems: "center",
         justifyContent: "center",
 
@@ -78,12 +82,13 @@ export const SolidButton = ({
           fontSize: Typography.fontSizeMedium,
           color: Colors.white,
           textAlign: "center",
-          fontFamily: Typography.fontFamilyMedium,
+          fontFamily: Typography.fontFamilyBold,
           ...textStyle,
         }}
       >
         {title}
       </Text>
+      {icon2 && icon2}
     </TouchableOpacity>
   );
 };

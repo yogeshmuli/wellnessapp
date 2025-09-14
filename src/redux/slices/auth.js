@@ -2,17 +2,20 @@ import { createSlice } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { login, createUser, logout as LogoutThunk } from "../thunks/auth";
 import Toast from "react-native-toast-message";
+import { RESET_APP } from "./global";
+
+const initialState = {
+  name: null,
+  email: null,
+  token: null,
+  role: null,
+  error: null,
+  registrationInProgress: false, // New state to track registration progress
+};
 
 const authSlice = createSlice({
   name: "authSlice",
-  initialState: {
-    name: null,
-    email: null,
-    token: null,
-    role: null,
-    error: null,
-    registrationInProgress: false, // New state to track registration progress
-  },
+  initialState: initialState,
   reducers: {
     setUser(state, action) {
       const { name, email, token, role } = action.payload;
@@ -31,6 +34,9 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
+    builder.addCase(RESET_APP, (state) => {
+      state = initialState;
+    });
     builder
       .addCase(login.fulfilled, (state, action) => {
         authSlice.caseReducers.setUser(state, action);

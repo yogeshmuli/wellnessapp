@@ -8,6 +8,8 @@ import List from "../pages/friends/list";
 import Chat from "../pages/friends/chat";
 import Search from "../pages/friends/search";
 import FriendProfile from "../pages/profile/index"; // Importing the FriendProfile component
+import Feed from "../pages/friends/feed";
+import { Colors } from "../styles";
 
 const FriendsContainer = () => {
   return (
@@ -16,6 +18,7 @@ const FriendsContainer = () => {
         headerShown: false,
       }}
     >
+      <FriendsStack.Screen name="Feed" component={Feed} />
       <FriendsStack.Screen name="FriendsList" component={List} />
       <FriendsStack.Screen name="Chat" component={Chat} />
       <FriendsStack.Screen name="Search" component={Search} />

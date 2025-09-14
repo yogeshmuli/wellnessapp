@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { View, Image, ActivityIndicator } from "react-native";
-import { Colors } from "../../styles";
+
 import {
   getStorage,
   ref,
   getDownloadURL,
 } from "@react-native-firebase/storage";
 import FastImage from "react-native-fast-image";
+import { useTheme } from "../../hooks/useTheme";
 
 export const getDownloadURLForReference = async (reference) => {
   const storage = getStorage();
@@ -132,10 +133,11 @@ export const Avatars = ({
   imageSource,
   size = 50,
   borderWidth = 0,
-  borderColor = Colors.primary,
+  borderColor = "#fff",
   secondaryComponent = null,
   nestedImageSize = 0,
 }) => {
+  const { Colors } = useTheme();
   return (
     <View
       style={{

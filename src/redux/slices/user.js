@@ -1,14 +1,17 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { updateUserProfile, getUser, getUserFeed } from "../thunks/user";
+import { RESET_APP } from "./global";
+
+const initialState = {
+  userData: null,
+  userFeed: [],
+  loading: false,
+  error: null,
+};
 
 const userSlice = createSlice({
   name: "user",
-  initialState: {
-    userData: null,
-    userFeed: [],
-    loading: false,
-    error: null,
-  },
+  initialState: initialState,
   reducers: {
     setUserData(state, action) {
       state.userData = action.payload;
@@ -22,11 +25,15 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(RESET_APP, (state) => {
+        state = initialState;
+      })
       .addCase(updateUserProfile.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
       .addCase(updateUserProfile.fulfilled, (state, action) => {
+        console.log("User data fetched:", action.payload);
         state.userData = action.payload;
         state.loading = false;
       })

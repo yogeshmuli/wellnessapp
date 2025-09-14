@@ -57,8 +57,8 @@ export const createUser = createAsyncThunk(
         fullName: model.fullname,
         email: model.email,
         age: model.age,
-        primaryGoal: model.primaryGoal,
-        interests: model.interest,
+        fitnessLevel: model.fitnessLevel,
+        focusAreas: model.focusAreas,
       };
       // use create user in db thunk to create user in the backend
       await thunkAPI.dispatch(createUserInDb(requestObject)).unwrap();
@@ -110,8 +110,8 @@ export const createUserInDb = createAsyncThunk(
         email: model.email,
 
         age: parseInt(model.age, 10) || null, // Ensure age is a number or null
-        primaryGoal: model.primaryGoal,
-        interests: Array.isArray(model.interests) ? model.interests : [], // Ensure interests is an array
+        fitnessLevel: model.fitnessLevel,
+        focusAreas: model.focusAreas, // Ensure interests is an array
       };
       const response = await axiosInstance.post(
         "/auth/register",
@@ -133,6 +133,7 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
   try {
     // sign out from Firebase
     await getAuth().signOut();
+    thunkAPI.dispatch({ type: "RESET_APP" });
     return true;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);

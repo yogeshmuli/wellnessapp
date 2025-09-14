@@ -30,12 +30,7 @@ import {
 } from "../../components/avatars";
 import { setupTrackPlayer } from "../../utils/trackplayer";
 import WebView from "react-native-webview";
-
-const formatTime = (timeInSeconds) => {
-  const minutes = Math.floor(timeInSeconds / 60);
-  const seconds = Math.floor(timeInSeconds % 60);
-  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
-};
+import { formatTime } from "../../utils/helpers";
 
 const TrackPlayerComponent = ({ trackDetails }) => {
   const [isPlaying, setIsPlaying] = React.useState(false);

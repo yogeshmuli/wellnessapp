@@ -1,29 +1,164 @@
 import React, { useState, useCallback, useEffect, useRef } from "react";
-import {
-  Text,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import { View, ScrollView, TouchableOpacity, FlatList } from "react-native";
+import Text from "../../components/text"; // Adjust the import path as necessary
 import { RefreshControl } from "react-native";
-import { Colors, Spacing, Typography } from "../../styles"; // Adjust the import path as necessary
+import { Spacing, Typography } from "../../styles"; // Adjust the import path as necessary
 import { Pills } from "../../components/pills";
 import { useDispatch, useSelector } from "react-redux";
 
 import { fetchChallenges } from "../../redux/thunks/challenge"; // Adjust the import path as necessary
 import { AsyncImage } from "../../components/avatars";
-import { OutlinedButton } from "../../components/buttons";
+import { OutlinedButton, SolidButton } from "../../components/buttons";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import LoadingOverlay from "../../components/loadingOverlay";
 import SafeAreaView from "../../components/safearea";
 import { joinChallenge } from "../../redux/thunks/challenge"; // Adjust the import path as necessary
 import Toast from "react-native-toast-message";
+import { toTitleCase, getColorByFocusArea } from "../../utils/helpers";
+import ProgressBar from "../../components/progressbar";
+import { useTheme } from "../../hooks/useTheme";
+
+const ChallengeCard = ({ challenge, onPress, onJoin }) => {
+  const { Colors } = useTheme();
+  const color = getColorByFocusArea(challenge?.focusArea?.name);
+  const challengeStatus = challenge?.challengeStatus;
+  return (
+    <TouchableOpacity onPress={onPress}>
+      <View
+        style={{
+          width: "100%",
+          backgroundColor: Colors.cardBackground,
+          borderRadius: 16,
+          padding: 21,
+          marginBottom: Spacing.medium,
+          flexDirection: "column",
+          alignItems: "flex-start",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 18,
+            fontWeight: Typography.fontWeightBold,
+            paddingHorizontal: 0,
+          }}
+        >
+          {challenge.title}
+        </Text>
+        {/* Tags */}
+        <View style={{ flexDirection: "row", marginTop: Spacing.small }}>
+          <View
+            style={{
+              marginRight: Spacing.small,
+              backgroundColor: color,
+              borderRadius: 6,
+            }}
+          >
+            <Text style={{ color: Colors.white }}>
+              {" "}
+              {challenge?.focusArea?.label
+                ? challenge.focusArea.label
+                : "Other"}
+            </Text>
+          </View>
+          <View
+            style={{
+              marginRight: Spacing.small,
+              backgroundColor: Colors.lightBodyBackground,
+              borderRadius: 6,
+            }}
+          >
+            <Text style={{ color: Colors.text }}>
+              {" "}
+              {challenge?.difficultyLevel
+                ? toTitleCase(challenge.difficultyLevel)
+                : "Beginner"}
+            </Text>
+          </View>
+        </View>
+        {}
+        {/* progress section */}
+        {(challengeStatus === "ENROLLED" ||
+          challengeStatus === "COMPLETED") && (
+          <View
+            style={{
+              width: "100%",
+              marginTop: Spacing.medium,
+              flexDirection: "column",
+            }}
+          >
+            <View
+              style={{ flexDirection: "row", justifyContent: "space-between" }}
+            >
+              <Text style={{ paddingHorizontal: 0, color: Colors.lightText }}>
+                Progress
+              </Text>
+              <Text style={{ color, fontWeight: Typography.fontWeightMedium }}>
+                {challenge.challengeProgress
+                  ? `${challenge.challengeProgress}%`
+                  : "0%"}
+              </Text>
+            </View>
+            <ProgressBar
+              progress={challenge.challengeProgress || 0}
+              color={color}
+            />
+          </View>
+        )}
+
+        {challengeStatus !== "ENROLLED" && challengeStatus !== "COMPLETED" && (
+          <>
+            {/* Subtitle */}
+            <Text
+              style={{
+                fontSize: 16,
+
+                marginTop: Spacing.medium,
+                lineHeight: 23,
+                color: Colors.lightText,
+              }}
+            >
+              {challenge.subtitle}
+            </Text>
+
+            {/* Action button and duration */}
+            <View
+              style={{
+                width: "100%",
+                alignItems: "center",
+                flexDirection: "row",
+                marginTop: 15,
+                justifyContent: "space-between",
+
+                padding: 0,
+              }}
+            >
+              <Text style={{ fontSize: 16 }}>
+                {" "}
+                {challenge.durationDays || 0} days
+              </Text>
+              <SolidButton
+                title="Join"
+                onPress={() => onJoin(challenge)}
+                style={{
+                  paddingHorizontal: Spacing.large,
+                  borderRadius: Spacing.small,
+                  width: 150,
+                  height: 40,
+                }}
+              />
+            </View>
+          </>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const ChallengesList = () => {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [filterTag, setFilterTag] = useState("All");
+  const { Colors } = useTheme();
   const challengesFromReducer = useSelector(
     (state) => state.challenge.challenges
   );
@@ -59,6 +194,7 @@ const ChallengesList = () => {
       const response = await dispatch(
         fetchChallenges({ tag: filterTag })
       ).unwrap();
+      console.log("Fetched challenges:", response);
       setChallenges(response);
     } catch (error) {
       console.error("Error fetching challenges:", error);
@@ -162,187 +298,96 @@ const ChallengesList = () => {
       />
     );
   };
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
-      <LoadingOverlay visible={loading && challenges.length === 0} />
-      <View
-        style={{
-          display: "flex",
-          marginTop: Spacing.medium,
-          marginBottom: Spacing.large,
-          paddingHorizontal: Spacing.large,
-          flexDirection: "row",
-          justifyContent: "flex-start",
-          alignSelf: "flex-start",
-        }}
-      >
-        <Text
-          style={{ fontSize: Typography.fontSizeLarge, fontWeight: "bold" }}
-        >
-          Wellness Challenges
-        </Text>
-      </View>
-      {/*  tag pills */}
-      <View style={{ height: 60 }}>
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{
-            flexDirection: "row",
-            alignItems: "center",
-            paddingHorizontal: Spacing.large,
-            paddingVertical: Spacing.small,
-          }}
-          style={{}}
-        >
-          {[
-            "All",
-            "Fitness",
-            "Nutrition",
-            "Mental Health",
-            "Sleep",
-            "Hydration",
-            "Mindfulness",
-            "Stress Management",
-          ].map((tag) => (
-            <TouchableOpacity
-              key={tag}
-              style={{
-                marginRight: Spacing.small,
-              }}
-              onPress={() => setFilterTag(tag)}
-            >
-              <Pills
-                key={tag}
-                title={tag}
-                backgroundColor={
-                  filterTag === tag ? Colors.primary : Colors.lightGray
-                }
-                textColor={filterTag === tag ? Colors.white : Colors.text}
-                paddingHorizontal={Spacing.medium}
-                paddingVertical={Spacing.small}
-                borderRadius={18}
-                height={36}
-                fontSize={14}
-              />
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+  const ActiveChallenges = challenges.filter(
+    (challenge) =>
+      challenge.challengeStatus === "ENROLLED" ||
+      challenge.challengeStatus === "COMPLETED"
+  );
+  const AvailableChallenges = challenges.filter(
+    (challenge) =>
+      challenge.challengeStatus !== "ENROLLED" &&
+      challenge.challengeStatus !== "COMPLETED"
+  );
 
-      {/* FlatList for challenges */}
-      {challenges.length > 0 ? (
-        <FlatList
-          contentContainerStyle={{
-            flexDirection: "column",
-            alignItems: "stretch",
-            justifyContent: "flex-start",
-            paddingHorizontal: Spacing.large,
-            paddingTop: Spacing.large,
-          }}
-          data={challenges}
-          removeClippedSubviews={true}
-          renderItem={({ item: challenge }) => {
-            return (
-              <View
-                key={challenge.id}
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bodyBackground }}>
+      <LoadingOverlay visible={loading && challenges.length === 0} />
+      <View style={{ flex: 1, width: "100%", paddingHorizontal: 17.5 }}>
+        <ScrollView
+          style={{ flex: 1, width: "100%" }}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {/* header */}
+          <View
+            style={{
+              paddingVertical: Spacing.small,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <TouchableOpacity
+              style={{ flexDirection: "row", alignItems: "center" }}
+              onPress={() => {}}
+            >
+              <Text
                 style={{
-                  width: "100%",
-                  backgroundColor: Colors.white,
-                  borderRadius: Spacing.small,
-                  // padding: Spacing.medium,
-                  marginBottom: Spacing.medium,
-                  shadowColor: Colors.black,
-                  shadowOffset: { width: 0, height: 1 },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 1.41,
-                  elevation: 2,
+                  fontSize: 20,
+                  fontWeight: "bold",
+                  marginLeft: 0,
+                  paddingLeft: 0,
+                  color: Colors.text,
                 }}
               >
-                <TouchableOpacity
+                {"Monthly Challenges"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          {/* Active Challenges */}
+          {ActiveChallenges.length > 0 && (
+            <>
+              <Text
+                style={{
+                  fontSize: 18,
+                  paddingHorizontal: 0,
+                  marginBottom: Spacing.medium,
+                }}
+              >
+                Active Challenges
+              </Text>
+              {ActiveChallenges.map((challenge) => (
+                <ChallengeCard
                   key={challenge.id}
+                  challenge={challenge}
                   onPress={() => onChallengePress(challenge)}
-                >
-                  {/* Async Image */}
-                  {challenge.imageUrl ? (
-                    <AsyncImage
-                      source={challenge.imageUrl}
-                      style={{
-                        width: "100%",
-                        height: 160,
-                        borderRadius: Spacing.small,
-                        marginBottom: Spacing.medium,
-                      }}
-                      resizeMode="cover"
-                    />
-                  ) : null}
-
-                  <Text
-                    style={{
-                      fontSize: Typography.fontSizeMedium,
-                      fontFamily: Typography.fontFamily,
-
-                      marginBottom: Spacing.small,
-                      paddingHorizontal: Spacing.medium,
-                    }}
-                  >
-                    {challenge.title}
-                  </Text>
-                  <View
-                    style={{
-                      paddingHorizontal: Spacing.medium,
-                      display: "flex",
-                      flexDirection: "row",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      marginBottom: Spacing.small,
-                    }}
-                  >
-                    {/* duration and participant */}
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: Colors.textSecondary,
-                        marginRight: Spacing.small,
-                        fontFamily: Typography.fontFamily,
-                      }}
-                    >
-                      {challenge.durationDays
-                        ? `${challenge.durationDays} days`
-                        : "No duration specified"}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        color: Colors.textSecondary,
-                        fontFamily: Typography.fontFamily,
-                      }}
-                    >
-                      {challenge.participantCount} participants
-                    </Text>
-                  </View>
-                  {/* Join Button OutlinedButton */}
-                  {getButton(challenge)}
-                </TouchableOpacity>
-              </View>
-            );
-          }}
-        />
-      ) : (
-        <Text
-          style={{
-            color: Colors.text,
-            width: "100%",
-
-            marginTop: 20,
-            textAlign: "center",
-            fontFamily: Typography.fontFamily,
-            fontSize: Typography.fontSizeMedium,
-          }}
-        >
-          No challenges available
-        </Text>
-      )}
+                  button={getButton(challenge)}
+                />
+              ))}
+            </>
+          )}
+          {/* Available Challenges */}
+          <>
+            <Text
+              style={{
+                fontSize: 18,
+                paddingHorizontal: 0,
+                marginBottom: Spacing.medium,
+              }}
+            >
+              Available Challenges
+            </Text>
+            {AvailableChallenges.map((challenge) => (
+              <ChallengeCard
+                key={challenge.id}
+                challenge={challenge}
+                onPress={() => onChallengePress(challenge)}
+                onJoin={() => onJoinChallenge(challenge)}
+              />
+            ))}
+          </>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   );
 };

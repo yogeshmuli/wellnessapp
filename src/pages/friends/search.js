@@ -1,15 +1,15 @@
 import React, { useEffect, useRef } from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   ScrollView,
   RefreshControl,
 } from "react-native";
 import Input from "../../components/inputs";
 import Icon from "react-native-vector-icons/FontAwesome5";
+import Text from "../../components/text";
 
-import { Colors, Spacing, Typography } from "../../styles"; // Adjust the import path as necessary
+import { Spacing, Typography } from "../../styles"; // Adjust the import path as necessary
 import Ionicons from "react-native-vector-icons/Ionicons";
 import LoadingOverlay from "../../components/loadingOverlay";
 import { useNavigation } from "@react-navigation/native";
@@ -18,6 +18,7 @@ import { searchFriends } from "../../redux/thunks/friends"; // Adjust the import
 import { Avatars } from "../../components/avatars";
 import { useFocusEffect } from "@react-navigation/native";
 import SafeAreaView from "../../components/safearea";
+import { useTheme } from "../../hooks/useTheme";
 
 // Friends List Component
 const FriendSearch = () => {
@@ -29,6 +30,7 @@ const FriendSearch = () => {
   const dispatch = useDispatch();
   const inputRef = React.useRef(null);
   const searchQueryRef = useRef(searchQuery);
+  const { Colors } = useTheme();
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -83,7 +85,7 @@ const FriendSearch = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bodyBackground }}>
       <LoadingOverlay visible={loading} />
       <View
         style={{
@@ -96,11 +98,11 @@ const FriendSearch = () => {
           style={{ flexDirection: "row", alignItems: "center" }}
           onPress={() => navigation.goBack()}
         >
-          <Icon name="chevron-left" size={24} color={Colors.black} />
+          <Icon name="chevron-left" size={24} color={Colors.text} />
           <Text
             style={{
               fontSize: Typography.fontSizeLarge,
-              fontWeight: "bold",
+              fontFamily: Typography.fontFamilyBold,
               marginLeft: Spacing.small,
             }}
           >
@@ -118,20 +120,25 @@ const FriendSearch = () => {
         <Input
           ref={inputRef}
           placeholder="Search by name, username or email"
-          leftIcon={<Ionicons name="search" size={24} color={Colors.gray} />}
+          leftIcon={
+            <Ionicons name="search" size={24} color={Colors.lightText} />
+          }
           value={searchQuery}
           containerStyle={{
             marginBottom: Spacing.medium,
-            backgroundColor: Colors.grayBg,
-            borderRadius: 999,
+            backgroundColor: Colors.nestedDark,
+            borderRadius: 12,
+            borderColor: Colors.lightBorder,
+            borderWidth: 1,
           }}
           style={{
-            backgroundColor: Colors.grayBg,
-            borderRadius: 999,
+            backgroundColor: Colors.nestedDark,
+
             fontSize: Typography.fontSizeMedium,
             fontFamily: Typography.fontFamilyRegular,
             borderWidth: 0,
           }}
+          textStyle={{ color: Colors.lightText }}
           onChangeText={(text) => setSearchQuery(text)}
           onSubmitEditing={() => onSearchFriends()}
         />
@@ -184,8 +191,8 @@ const FriendSearch = () => {
                     alignItems: "center",
                     paddingVertical: Spacing.small,
 
-                    borderBottomWidth: 1,
-                    borderBottomColor: Colors.lightGray,
+                    borderBottomWidth: 2,
+                    borderBottomColor: Colors.lightBorder,
 
                     height: 97,
                   }}
@@ -196,7 +203,7 @@ const FriendSearch = () => {
                     <Ionicons
                       name="person-circle-outline"
                       size={60}
-                      color={Colors.gray}
+                      color={Colors.text}
                     />
                   )}
                   {/* name and tagline */}
@@ -210,7 +217,8 @@ const FriendSearch = () => {
                     <Text
                       style={{
                         marginLeft: Spacing.small,
-                        fontSize: Typography.fontSizeMedium,
+                        fontSize: 16,
+                        fontFamily: Typography.fontFamilyBold,
                         color: Colors.text,
                       }}
                     >

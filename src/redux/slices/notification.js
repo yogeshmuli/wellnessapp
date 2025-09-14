@@ -1,5 +1,6 @@
 import { fetchNotifications } from "../thunks/notification";
 import { createSlice } from "@reduxjs/toolkit";
+import { RESET_APP } from "./global";
 
 const initialState = {
   notifications: [],
@@ -13,6 +14,9 @@ const notificationSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(RESET_APP, (state) => {
+        state = initialState;
+      })
       .addCase(fetchNotifications.pending, (state) => {
         state.loading = true;
         state.error = null;

@@ -1,8 +1,9 @@
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity } from "react-native";
+import Text from "../../components/text";
 import { useNavigation } from "@react-navigation/native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useState } from "react";
-import { Typography, Spacing, Colors } from "../../styles";
+import { Typography, Spacing } from "../../styles";
 import { SolidButton } from "../../components/buttons";
 import Input from "../../components/inputs";
 import useForm from "../../hooks/useForm";
@@ -10,6 +11,7 @@ import { login } from "../../redux/thunks/auth";
 import { useDispatch } from "react-redux";
 import LoadingOverlay from "../../components/loadingOverlay";
 import SafeAreaView from "../../components/safearea/index";
+import { useTheme } from "../../hooks/useTheme";
 
 // Validation function for signin
 const validate = (name, value) => {
@@ -31,6 +33,7 @@ const Signin = () => {
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const { Colors } = useTheme();
   const { values, errors, handleChange, handleSubmit } = useForm(
     { email: "", password: "" },
     validate
@@ -62,7 +65,7 @@ const Signin = () => {
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.body }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bodyBackground }}>
       <KeyboardAwareScrollView
         contentContainerStyle={{
           flex: 1,
@@ -76,36 +79,40 @@ const Signin = () => {
           style={{
             flex: 1,
             width: "100%",
-            padding: Spacing.large,
+            padding: 27,
             flexDirection: "column",
             justifyContent: "center",
             alignItems: "stretch",
-            backgroundColor: Colors.body,
           }}
         >
           <View style={{ alignItems: "center" }}>
-            <Image
-              source={require("../../assets/logo.png")}
-              style={{ width: 100, height: 100, marginBottom: 20 }}
-            />
             <Text
               style={{
                 fontSize: Typography.fontSizeXLarge,
+                marginHorizontal: Spacing.large,
                 marginBottom: Spacing.small,
                 fontFamily: Typography.fontFamilyBold,
                 color: Colors.text,
+                textAlign: "center",
               }}
             >
-              WellnessHub
+              Welcome Back, Brother
             </Text>
             <Text
               style={{
-                fontSize: Typography.fontSizeMedium,
+                fontSize: 18,
                 color: Colors.text,
                 fontFamily: Typography.fontFamily,
+                lineHeight: 30,
+                textAlign: "center",
+                width: 320,
               }}
             >
-              Your Journey to Wellness Begins Here
+              <Text style={{ textAlign: "center" }}>
+                {" "}
+                Pick up your journey where you left off.{"\n"}
+              </Text>
+              <Text>Log in to track your habits, challenges, and growth.</Text>
             </Text>
           </View>
           <View style={{ height: 36 }}></View>
@@ -133,15 +140,13 @@ const Signin = () => {
               error={errors.password}
             />
 
-            <View style={{ height: 40 }}></View>
-            <SolidButton title="Login" onPress={() => onClickLogin()} />
-            <View style={{ height: 16 }}></View>
+            <View style={{ height: 30 }}></View>
             <View>
               <TouchableOpacity onPress={onClickSignUp}>
                 <Text
                   style={{
-                    fontSize: Typography.fontSizeSmall,
-                    color: Colors.gray,
+                    fontSize: 14,
+                    color: Colors.lightText,
                     textAlign: "center",
                     fontFamily: Typography.fontFamily,
                   }}
@@ -158,6 +163,8 @@ const Signin = () => {
                 </Text>
               </TouchableOpacity>
             </View>
+            <View style={{ height: 20 }}></View>
+            <SolidButton title="Log In" onPress={() => onClickLogin()} />
           </View>
           <View style={{ height: 36 }}></View>
           <Text

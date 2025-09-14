@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { NavigationContainer } from "@react-navigation/native";
+import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -21,6 +21,7 @@ import { getUser, getUserFeed } from "../redux/thunks/user";
 import { fetchChallenges } from "../redux/thunks/challenge";
 import { fetchFriendRequests, fetchFriendsList } from "../redux/thunks/friends";
 import { fetchContent } from "../redux/thunks/content";
+import { fetchHabits } from "../redux/thunks/habits";
 
 // Custom toast config
 const toastConfig = {
@@ -89,7 +90,8 @@ const RootContainer = () => {
       dispatch(fetchChallenges());
       dispatch(fetchFriendRequests());
       dispatch(fetchFriendsList());
-      dispatch(fetchContent());
+
+      dispatch(fetchHabits());
     } catch {
       console.error("Failed to fetch initial data");
     } finally {
@@ -118,7 +120,7 @@ const RootContainer = () => {
 
   return (
     <>
-      <NavigationContainer ref={navigationRef}>
+      <NavigationContainer ref={navigationRef} theme={DarkTheme}>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           {user ? (
             <Stack.Screen name="Main" component={MainApp} />

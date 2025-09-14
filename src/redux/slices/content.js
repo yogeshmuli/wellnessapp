@@ -1,15 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchContent } from "../thunks/content";
+import { RESET_APP } from "./global";
+
+const initialState = {
+  contentList: [],
+  loading: false,
+  error: null,
+};
 
 const contentSlice = createSlice({
   name: "contentSlice",
-  initialState: {
-    contentList: [],
-    loading: false,
-    error: null,
-  },
+  initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
+    builder.addCase(RESET_APP, (state) => {
+      state = initialState;
+    });
     builder.addCase(fetchContent.pending, (state) => {
       state.loading = true;
     });

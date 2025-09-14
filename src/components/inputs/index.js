@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
-  Text,
   TextInput,
   TouchableOpacity,
   ScrollView,
@@ -11,46 +10,63 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import Text from "../text";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import Octicons from "react-native-vector-icons/Octicons";
 
-import { Colors, Typography, Spacing } from "../../styles";
+import { Typography, Spacing } from "../../styles";
 import { BottomSheetModal } from "../modals";
+import { text } from "stream/consumers";
+import { useTheme } from "../../hooks/useTheme";
 
 const Pill = ({
   label,
   onRemove,
   isAddMore,
   onPress,
+  colorKey,
   disableEditing = false,
-}) => (
-  <TouchableOpacity
-    onPress={isAddMore ? onPress : onRemove}
-    style={{
-      flexDirection: "row",
-      alignItems: "center",
-      backgroundColor: isAddMore ? Colors.lightGray : Colors.primary,
-      borderRadius: 16,
-      paddingHorizontal: 12,
-      paddingVertical: 6,
-      marginRight: 8,
-      marginBottom: 8,
-    }}
-  >
-    <Text
+}) => {
+  const { Colors } = useTheme();
+  return (
+    <TouchableOpacity
+      onPress={isAddMore ? onPress : onRemove}
       style={{
-        color: isAddMore ? Colors.text : Colors.white,
-        fontWeight: "500",
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: isAddMore
+          ? Colors.lightBodyBackground
+          : Colors[colorKey],
+        borderRadius: 4,
+        paddingHorizontal: 6,
+        width: "auto",
+        marginRight: 8,
+        marginBottom: 8,
+        height: "auto",
       }}
     >
-      {label}
-    </Text>
-    {!isAddMore && !disableEditing && (
-      <Text style={{ color: Colors.white, marginLeft: 6, fontWeight: "bold" }}>
-        ×
+      <Text
+        style={{
+          color: isAddMore ? Colors.text : Colors.white,
+          fontWeight: "500",
+          fontSize: 14,
+        }}
+      >
+        {label}
       </Text>
-    )}
-  </TouchableOpacity>
-);
+      {!isAddMore && !disableEditing && (
+        <Text
+          style={{
+            color: Colors.white,
+            fontWeight: "bold",
+          }}
+        >
+          ×
+        </Text>
+      )}
+    </TouchableOpacity>
+  );
+};
 
 export const MultiSelectInput = ({
   label,
@@ -62,9 +78,9 @@ export const MultiSelectInput = ({
   error,
   disableEditing = false,
 }) => {
-  console.log("CustomEditableInput rendered with value:");
   const [input, setInput] = useState("");
   const [showInput, setShowInput] = useState(false);
+  const { Colors } = useTheme();
 
   const handleAdd = (item) => {
     if (item && !selected.includes(item)) {
@@ -86,14 +102,27 @@ export const MultiSelectInput = ({
   );
 
   return (
-    <View style={{ marginBottom: 16 }}>
-      <Text style={[{ marginBottom: 8 }, labelStyle]}>{label}</Text>
+    <View style={{ marginBottom: 16, width: "100%" }}>
+      <Text
+        style={{
+          marginBottom: 8,
+          fontSize: 18,
+          color: Colors.text,
+
+          ...labelStyle,
+        }}
+      >
+        {label}
+      </Text>
 
       <View
         style={{
           flexDirection: "row",
           flexWrap: "wrap",
           alignItems: "center",
+          backgroundColor: Colors.lightBodyBackground,
+          padding: 12,
+          borderRadius: 8,
         }}
       >
         {selected &&
@@ -101,6 +130,7 @@ export const MultiSelectInput = ({
             <Pill
               key={item.value}
               label={item.label}
+              colorKey={item.colorKey}
               disableEditing={disableEditing}
               onRemove={() => handleRemove(item)}
             />
@@ -124,7 +154,7 @@ export const MultiSelectInput = ({
 
           <View
             style={{
-              backgroundColor: Colors.body,
+              backgroundColor: Colors.bodyBackground,
               padding: 20,
               borderTopLeftRadius: 16,
               borderTopRightRadius: 16,
@@ -149,7 +179,7 @@ export const MultiSelectInput = ({
                 style={{
                   fontSize: Typography.fontSizeLarge,
                   fontFamily: Typography.fontFamilyBold,
-                  color: Colors.textPrimary,
+                  color: Colors.text,
                   marginBottom: Spacing.small,
                 }}
               >
@@ -157,7 +187,7 @@ export const MultiSelectInput = ({
               </Text>
               {/* close icon */}
               <TouchableOpacity onPress={() => setShowInput(false)}>
-                <Ionicons name="close" size={24} color={Colors.textPrimary} />
+                <Ionicons name="close" size={24} color={Colors.text} />
               </TouchableOpacity>
             </View>
 
@@ -174,6 +204,7 @@ export const MultiSelectInput = ({
                 <Pill
                   key={item.value}
                   label={item.label}
+                  colorKey={item.colorKey}
                   disableEditing={disableEditing}
                   onRemove={() => handleRemove(item)}
                 />
@@ -184,12 +215,13 @@ export const MultiSelectInput = ({
             <TextInput
               style={{
                 height: 50,
-                borderColor: Colors.lightGray,
+                borderColor: Colors.lightBorder,
                 borderWidth: 1,
                 borderRadius: 12,
                 paddingHorizontal: 10,
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.lightBodyBackground,
                 fontFamily: Typography.fontFamily,
+                color: Colors.text,
               }}
               value={input}
               onChangeText={setInput}
@@ -201,7 +233,7 @@ export const MultiSelectInput = ({
                 marginTop: 8,
                 minHeight: 150,
                 borderRadius: 8,
-                backgroundColor: Colors.body,
+                backgroundColor: Colors.bodyBackground,
               }}
               keyboardShouldPersistTaps="always"
             >
@@ -214,7 +246,7 @@ export const MultiSelectInput = ({
                       paddingVertical: 10,
                       paddingHorizontal: 12,
                       borderBottomWidth: 1,
-                      borderBottomColor: Colors.lightGray,
+                      borderBottomColor: Colors.lightBorder,
                     }}
                   >
                     <Text
@@ -265,6 +297,124 @@ export const MultiSelectInput = ({
   );
 };
 
+export const SelectInput = ({ label, value, onChange, options, error }) => {
+  const [showOptions, setShowOptions] = useState(false);
+  const { Colors } = useTheme();
+
+  const handleSelect = (item) => {
+    onChange(item);
+    setShowOptions(false);
+  };
+
+  return (
+    <View style={{ marginBottom: 16, width: "100%" }}>
+      <Text
+        style={{
+          marginBottom: 8,
+          fontSize: 18,
+          color: Colors.text,
+        }}
+      >
+        {label}
+      </Text>
+      <TouchableOpacity
+        onPress={() => setShowOptions(true)}
+        style={{
+          height: 50,
+          borderColor: Colors.lightBorder,
+          borderWidth: 1,
+          borderRadius: 12,
+          paddingHorizontal: 10,
+          backgroundColor: Colors.lightBodyBackground,
+          justifyContent: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 18,
+            color: value ? Colors.text : Colors.lightText,
+            fontFamily: Typography.fontFamily,
+          }}
+        >
+          {value?.label || "Select an option"}
+        </Text>
+      </TouchableOpacity>
+
+      <Modal visible={showOptions} animationType="slide" transparent={true}>
+        <TouchableWithoutFeedback onPress={() => setShowOptions(false)}>
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "rgba(0,0,0,0.5)",
+              justifyContent: "flex-end",
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: Colors.bodyBackground,
+                maxHeight: "50%",
+                borderTopLeftRadius: 16,
+                borderTopRightRadius: 16,
+                padding: 20,
+              }}
+            >
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontSize: Typography.fontSizeLarge,
+                    fontFamily: Typography.fontFamilyBold,
+                    color: Colors.text,
+                    marginBottom: Spacing.small,
+                  }}
+                >
+                  {`Select ${label}`}
+                </Text>
+                {/* close icon */}
+                <TouchableOpacity onPress={() => setShowOptions(false)}>
+                  <Ionicons name="close" size={24} color={Colors.text} />
+                </TouchableOpacity>
+              </View>
+              <ScrollView>
+                {options.map((option) => (
+                  <TouchableOpacity
+                    key={option.value}
+                    onPress={() => handleSelect(option)}
+                    style={{
+                      paddingVertical: 12,
+                      borderBottomWidth: 1,
+                      borderBottomColor: Colors.lightBorder,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: Typography.fontSizeMedium,
+                        color: Colors.text,
+                        fontFamily: Typography.fontFamily,
+                      }}
+                    >
+                      {option.label}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+
+      {error ? (
+        <Text style={{ color: Colors.error, marginTop: 4 }}>{error}</Text>
+      ) : null}
+    </View>
+  );
+};
+
 const Input = ({
   label,
   value,
@@ -278,10 +428,19 @@ const Input = ({
   keyboardType = "default",
   ...rest
 }) => {
+  const { Colors } = useTheme();
   return (
     <View>
       {label && (
-        <Text style={{ marginBottom: 8, fontFamily: Typography.fontFamily }}>
+        <Text
+          style={{
+            marginBottom: 8,
+            fontFamily: Typography.fontFamily,
+            fontSize: 18,
+
+            paddingLeft: -5,
+          }}
+        >
           {label}
         </Text>
       )}
@@ -300,14 +459,17 @@ const Input = ({
           style={{
             flex: 1,
             height: 50,
-            borderColor: Colors.lightGray,
+            borderColor: Colors.lightBorder,
             borderWidth: 1,
-            borderRadius: 12,
+            borderRadius: 8,
             paddingHorizontal: 10,
-            backgroundColor: Colors.white,
+            backgroundColor: Colors.lightBodyBackground,
             fontFamily: Typography.fontFamily,
+            fontSize: 18,
+            color: Colors.text,
             ...style,
           }}
+          placeholderTextColor={Colors.lightText}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
@@ -345,22 +507,34 @@ export const CustomEditableInput = ({
   disableEditing = false,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const { Colors } = useTheme();
 
   if (disableEditing) {
     // render normal input without editing
     return (
-      <Text
+      <View
         style={[
           {
+            flexDirection: "row",
+            alignItems: "center",
+            justifyContent: "center",
+
+            // width: "",
+          },
+          style,
+        ]}
+      >
+        <Text
+          style={{
             fontSize: Typography.fontSizeMedium,
             color: Colors.text,
             paddingVertical: 4,
-          },
-          textStyle,
-        ]}
-      >
-        {value || label}
-      </Text>
+            ...textStyle,
+          }}
+        >
+          {value || label}
+        </Text>
+      </View>
     );
   }
 
@@ -371,12 +545,11 @@ export const CustomEditableInput = ({
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "center",
-
-          // width: "",
         },
         style,
       ]}
     >
+      {label && <Text style={{ marginRight: 8 }}>{label}</Text>}
       {isEditing ? (
         <TextInput
           style={[
@@ -386,6 +559,7 @@ export const CustomEditableInput = ({
               fontSize: Typography.fontSizeMedium,
               paddingVertical: 4,
               color: Colors.text,
+              width: "auto",
 
               justifyContent: "center",
             },
@@ -399,14 +573,13 @@ export const CustomEditableInput = ({
         />
       ) : (
         <Text
-          style={[
-            {
-              fontSize: Typography.fontSizeMedium,
-              color: Colors.text,
-              paddingVertical: 4,
-            },
-            textStyle,
-          ]}
+          style={{
+            fontSize: Typography.fontSizeMedium,
+            color: Colors.text,
+            paddingVertical: 4,
+            width: "auto",
+            ...textStyle,
+          }}
         >
           {value || label}
         </Text>
@@ -419,6 +592,111 @@ export const CustomEditableInput = ({
           style={{ marginLeft: 8 }}
         />
       </TouchableOpacity>
+    </View>
+  );
+};
+
+export const CustomInput = ({
+  value,
+  onChangeText,
+  label,
+  suffix,
+  placeholder = "",
+  keyboardType = "default",
+  secureTextEntry = false,
+  disableEditing = false,
+  style = {},
+  textStyle = {},
+  inputStyle = {},
+}) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const ref = React.useRef();
+  const { Colors } = useTheme();
+
+  useEffect(() => {
+    if (isEditing) {
+      ref.current?.focus();
+    }
+  }, [isEditing]);
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+
+        ...style,
+      }}
+    >
+      <View style={{ flex: 1, flexDirection: "column" }}>
+        {label && (
+          <Text style={{ marginRight: 8, color: Colors.lightText }}>
+            {label}
+          </Text>
+        )}
+        {isEditing && !disableEditing ? (
+          <TextInput
+            ref={ref}
+            style={[
+              {
+                height: 40,
+
+                borderRadius: 8,
+                paddingHorizontal: 10,
+                paddingBottom: 3,
+                textAlignVertical: "center",
+
+                fontFamily: Typography.fontFamily,
+                fontSize: 18,
+                lineHeight: 20,
+                color: Colors.text,
+                ...inputStyle,
+              },
+            ]}
+            placeholderTextColor={Colors.lightText}
+            value={value}
+            onChangeText={onChangeText}
+            placeholder={placeholder}
+            keyboardType={keyboardType}
+            autoCapitalize="none"
+            secureTextEntry={secureTextEntry}
+          />
+        ) : (
+          <View
+            style={{
+              height: 40,
+              justifyContent: "center",
+            }}
+          >
+            <Text
+              style={{
+                borderRadius: 8,
+                paddingHorizontal: 10,
+
+                marginBottom: 0,
+                paddingTop: 0,
+
+                fontFamily: Typography.fontFamily,
+                fontSize: 18,
+                color: Colors.text,
+              }}
+            >
+              {value || placeholder} {suffix && suffix}
+            </Text>
+          </View>
+        )}
+      </View>
+      {/* Editing Icon */}
+      {!disableEditing && (
+        <TouchableOpacity onPress={() => setIsEditing(!isEditing)}>
+          <Octicons
+            name={isEditing ? "check" : "pencil"}
+            size={22}
+            color={iconColor}
+            style={{ marginLeft: 8 }}
+          />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

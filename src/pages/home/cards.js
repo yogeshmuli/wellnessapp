@@ -44,7 +44,7 @@ export const FriendJoinedCard = ({ data }) => {
           {friend?.photoUrl ? (
             <Avatars imageSource={friend.photoUrl} size={50} />
           ) : (
-            <Icon name="person-circle-outline" size={50} color={Colors.gray} />
+            <Icon name="person-circle-outline" size={50} color={Colors.text} />
           )}
           <View
             style={{
@@ -159,7 +159,7 @@ export const EarnedBadgeCard = ({ data }) => {
           {friend.photoUrl ? (
             <Avatars imageSource={friend.photoUrl} size={50} />
           ) : (
-            <Icon name="person-circle-outline" size={50} color={Colors.gray} />
+            <Icon name="person-circle-outline" size={50} color={Colors.text} />
           )}
           <View
             style={{

@@ -57,12 +57,12 @@ export const joinChallenge = createAsyncThunk(
 // thunk to change status of task
 export const changeTaskStatus = createAsyncThunk(
   "challenges/changeTaskStatus",
-  async ({ challengeId, taskId, status }, { rejectWithValue }) => {
+  async ({ challengeId, taskId, status, comments }, { rejectWithValue }) => {
     try {
       const userId = getAuth().currentUser.uid;
       const response = await axiosInstance.put(
         `/challenges/${challengeId}/tasks/${taskId}`,
-        { userId, status }
+        { userId, status, comments }
       );
       return response.data; // Assuming the API returns the updated task details
     } catch (error) {

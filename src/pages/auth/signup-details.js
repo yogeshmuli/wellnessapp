@@ -5,13 +5,17 @@ import { useState } from "react";
 
 import { Typography, Spacing, Colors } from "../../styles";
 import { SolidButton } from "../../components/buttons";
-import Input, { MultiSelectInput } from "../../components/inputs";
+import Input, { MultiSelectInput, SelectInput } from "../../components/inputs";
 import useForm from "../../hooks/useForm";
 import { createUser } from "../../redux/thunks/auth";
 import { useDispatch } from "react-redux";
 import LoadingOverlay from "../../components/loadingOverlay";
-import { Interests as InterestsConstant } from "../../constants/index";
+import {
+  Interests as InterestsConstant,
+  FitnessLevelOptions,
+} from "../../constants/index";
 import SafeAreaView from "../../components/safearea";
+import { useTheme } from "../../hooks/useTheme";
 
 // Validation function for details
 const validate = (name, value) => {
@@ -39,9 +43,18 @@ const SignupDetails = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
   const { params } = useRoute();
+  const { Colors } = useTheme();
 
   const { values, errors, handleChange, handleSubmit } = useForm(
-    { fullname: "", age: "", interest: [], primaryGoal: "" },
+    {
+      fullname: "",
+      age: "",
+      focusAreas: [],
+      fitnessLevel: {
+        label: "Beginner",
+        value: "beginner",
+      },
+    },
     validate
   );
 
@@ -50,13 +63,14 @@ const SignupDetails = () => {
       try {
         setLoading(true);
         let requestObject = {
-          email: params.email,
-          password: params.password,
+          email: params?.email ?? "",
+          password: params?.password ?? "",
           fullname: formValues.fullname,
           age: formValues.age,
-          interest: formValues.interest,
-          primaryGoal: formValues.primaryGoal,
+          focusAreas: formValues.focusAreas,
+          fitnessLevel: formValues.fitnessLevel,
         };
+        console.log("Signup request:", requestObject);
 
         await dispatch(createUser(requestObject)).unwrap();
         // navigation.navigate("Main");
@@ -68,20 +82,17 @@ const SignupDetails = () => {
       }
     });
   };
-  const mapMultiSelectOptions = (options) => {
-    return options.map((option) => ({
-      label: option,
-      value: option,
-    }));
-  };
+
   if (loading) {
     return <LoadingOverlay visible={loading} />;
   }
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.body }}>
+    <SafeAreaView
+      enableBottomPadding
+      style={{ flex: 1, backgroundColor: Colors.bodyBackground }}
+    >
       <KeyboardAwareScrollView
         contentContainerStyle={{
-          flex: 1,
           justifyContent: "center",
           alignItems: "center",
         }}
@@ -96,49 +107,43 @@ const SignupDetails = () => {
             flexDirection: "column",
             justifyContent: "flex-start",
             alignItems: "stretch",
-            backgroundColor: Colors.body,
           }}
         >
           {/* Header */}
           <View
             style={{
-              height: 92,
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "flex-start",
             }}
           >
-            <View
-              style={{
-                width: 48,
-                height: 48,
-                borderRadius: 24,
-                backgroundColor: Colors.primary,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
+            <View style={{ alignItems: "center" }}>
               <Text
                 style={{
-                  color: Colors.white,
-                  fontSize: Typography.fontSizeMedium,
+                  fontSize: Typography.fontSizeXLarge,
+                  marginHorizontal: Spacing.large,
+                  marginBottom: Spacing.small,
                   fontFamily: Typography.fontFamilyBold,
+                  color: Colors.text,
+                  textAlign: "center",
                 }}
               >
-                2
+                Complete Your Profile
+              </Text>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: Colors.text,
+                  fontFamily: Typography.fontFamily,
+                  lineHeight: 30,
+                  textAlign: "center",
+                  width: 320,
+                }}
+              >
+                Help us personalize your habits and challenges. A few quick
+                details to shape your journey.
               </Text>
             </View>
-            <View style={{ height: 16 }}></View>
-            <Text
-              style={{
-                fontSize: Typography.fontSizeLarge,
-                fontFamily: Typography.fontFamilyBold,
-                color: Colors.textPrimary,
-                marginTop: Spacing.small,
-              }}
-            >
-              Tell us more about you
-            </Text>
           </View>
           <View style={{ height: 32 }}></View>
           {/* Form */}
@@ -168,26 +173,26 @@ const SignupDetails = () => {
               error={errors.age}
             />
             <View style={{ height: 30 }}></View>
-            {/* Primary Goal */}
-            <Input
-              label="Primary Goal"
-              placeholder="What is your primary goal?"
-              value={values.primaryGoal}
-              onChangeText={(text) => handleChange("primaryGoal", text)}
-              error={errors.primaryGoal}
+
+            <SelectInput
+              label="Fitness Level"
+              options={FitnessLevelOptions}
+              placeholder="Select your fitness level"
+              value={values.fitnessLevel}
+              onChange={(item) => handleChange("fitnessLevel", item)}
+              error={errors.fitnessLevel}
             />
             <View style={{ height: 30 }}></View>
             {/* Interest Multiselect */}
             <MultiSelectInput
-              label="Interests"
-              placeholder="Select your interests"
-              options={mapMultiSelectOptions(InterestsConstant)}
-              selected={mapMultiSelectOptions(values.interest)}
+              label="Focus Areas"
+              placeholder="Select your focus areas "
+              options={InterestsConstant}
+              selected={values.focusAreas}
               onChange={(selected) => {
-                let updatedInterests = selected.map((item) => item.value);
-                handleChange("interest", updatedInterests);
+                handleChange("focusAreas", selected);
               }}
-              error={errors.interest}
+              error={errors.focusAreas}
             />
 
             <View style={{ height: 30 }}></View>
@@ -199,8 +204,8 @@ const SignupDetails = () => {
               <TouchableOpacity onPress={() => navigation.goBack()}>
                 <Text
                   style={{
-                    fontSize: Typography.fontSizeSmall,
-                    color: Colors.gray,
+                    fontSize: 14,
+                    color: Colors.text,
                     textAlign: "center",
                     fontFamily: Typography.fontFamily,
                   }}
@@ -209,6 +214,7 @@ const SignupDetails = () => {
                 </Text>
               </TouchableOpacity>
             </View>
+            <View style={{ height: 16 }}></View>
           </View>
         </View>
       </KeyboardAwareScrollView>

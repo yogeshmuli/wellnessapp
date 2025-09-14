@@ -1,12 +1,18 @@
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { View, StatusBar, useColorScheme, Platform } from "react-native";
 
-const SafeAreaView = ({ children, style, barColor, barStyle }) => {
+const SafeAreaView = ({
+  children,
+  style,
+  barColor,
+  barStyle,
+  enableBottomPadding = false,
+}) => {
   const insets = useSafeAreaInsets();
   const colorScheme = useColorScheme();
 
   // Default colors based on system theme
-  const isDark = false;
+  const isDark = true;
   const defaultBarColor = isDark ? "#000" : "#fff";
   const defaultBarStyle = isDark ? "light-content" : "dark-content";
 
@@ -20,7 +26,7 @@ const SafeAreaView = ({ children, style, barColor, barStyle }) => {
       <View
         style={{
           paddingTop: insets.top,
-          // paddingBottom: insets.bottom,
+          paddingBottom: enableBottomPadding ? insets.bottom : 0,
           paddingLeft: insets.left,
           paddingRight: insets.right,
           backgroundColor: barColor || defaultBarColor,

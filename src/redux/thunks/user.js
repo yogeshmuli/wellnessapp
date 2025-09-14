@@ -43,6 +43,9 @@ export const updateUserProfile = createAsyncThunk(
         interests: profileData.interests,
         badges: profileData.badges,
         photoUrl: profileData.photoUrl, // Ensure photoUrl is included
+        age: profileData.age,
+        height: profileData.height,
+        weight: profileData.weight,
       };
 
       const response = await axiosInstance.put(
@@ -121,6 +124,20 @@ export const getUserFeed = createAsyncThunk(
       return response.data; // Assuming the API returns the feed data
     } catch (error) {
       console.error("Error fetching user feed:", error);
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getUserLeaderboard = createAsyncThunk(
+  "user/getLeaderboard",
+  async (_, thunkAPI) => {
+    try {
+      const userId = getAuth().currentUser.uid;
+      const response = await axiosInstance.get(`/users/leaderboard`);
+      return response.data; // Assuming the API returns the feed data
+    } catch (error) {
+      console.error("Error fetching user leaderboard:", error);
       return thunkAPI.rejectWithValue(error.response.data);
     }
   }

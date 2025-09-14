@@ -1,17 +1,20 @@
 import React, { useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { View, Text, TouchableOpacity, Alert } from "react-native";
+import { View, TouchableOpacity, Alert } from "react-native";
+import Text from "../components/text";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import FontAwsome from "react-native-vector-icons/FontAwesome5";
 import FeatherIcon from "react-native-vector-icons/Feather";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Colors, Typography } from "../styles";
+import { Typography } from "../styles";
 
 import HomeContainer from "./home";
 import ProfileScreen from "../pages/profile";
 import ChallengesContainer from "./challenge"; // Importing the Challenges container
 import FriendsContainer from "./friends";
 import ContentContainer from "./content";
+import HabitContainer from "./habbit";
 import { useSocket } from "../hooks/useSocket";
 
 import notifee, {
@@ -21,6 +24,7 @@ import notifee, {
 } from "@notifee/react-native";
 import { navigationRef } from "../service/navigation.service";
 import Toast from "react-native-toast-message";
+import { useTheme } from "../hooks/useTheme";
 
 export async function requestNotificationPermission() {
   // iOS + Android 13+ both need runtime permission
@@ -40,16 +44,20 @@ const Tab = createBottomTabNavigator();
 // Custom Tab Bar Component
 const CustomTabBar = ({ state, descriptors, navigation }) => {
   const safeAreaInsets = useSafeAreaInsets();
+  const { Colors } = useTheme();
   return (
     <View
       style={{
         flexDirection: "row",
-        backgroundColor: "#fff",
+        backgroundColor: Colors.bodyBackground,
         borderTopWidth: 1,
-        borderTopColor: "#eee",
-        height: 70 + safeAreaInsets.bottom,
-        alignItems: "center",
+        borderTopColor: Colors.lightBorder,
+        height: 80 + safeAreaInsets.bottom,
+        alignItems: "flex-start",
+        paddingTop: 8,
+
         paddingBottom: safeAreaInsets.bottom,
+        paddingHorizontal: 8,
         justifyContent: "space-around",
       }}
     >
@@ -64,7 +72,8 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
 
         // Get icon from tabBarIcon option
         const isFocused = state.index === index;
-        const color = isFocused ? Colors.primary : Colors.black;
+        const color = isFocused ? Colors.white : Colors.text;
+        const backgroundColor = isFocused ? Colors.primary : "transparent";
         const size = 24;
         let icon = null;
         if (typeof options.tabBarIcon === "function") {
@@ -95,16 +104,20 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
               flex: 1,
               alignItems: "center",
               justifyContent: "center",
+              backgroundColor: backgroundColor,
+              borderRadius: 12,
+              paddingVertical: 8,
+              paddingHorizontal: 0,
             }}
           >
             {icon}
             <View style={{ height: 4 }} />
             <Text
               style={{
-                color,
-                fontSize: Typography.fontSizeSmall,
-                fontFamily: Typography.fontFamilyLight,
-                marginTop: 2,
+                color: color,
+                fontSize: 12,
+                fontFamily: Typography.fontFamilyRegular,
+                paddingHorizontal: 0,
               }}
             >
               {label}
@@ -297,15 +310,18 @@ const MainContainer = () => {
   return (
     <Tab.Navigator
       tabBar={(props) => <CustomTabBar {...props} />}
-      screenOptions={{ headerShown: false }}
+      screenOptions={{
+        headerShown: false,
+        animation: "shift",
+      }}
     >
       <Tab.Screen
         name="Home"
         component={HomeContainer}
         options={{
-          popToTopOnBlur: true,
+          popToTopOnBlur: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home-outline" size={size} color={color} />
+            <Ionicons name="home" size={size} color={color} />
           ),
         }}
         listeners={({ navigation }) => ({
@@ -319,14 +335,35 @@ const MainContainer = () => {
           },
         })}
       />
+      {/* habbit */}
+      <Tab.Screen
+        name="Habits"
+        component={HabitContainer}
+        options={{
+          popToTopOnBlur: false,
+          tabBarIcon: ({ color, size }) => (
+            <FontAwsome name="book" size={size} color={color} />
+          ),
+        }}
+        listeners={({ navigation }) => ({
+          tabPress: (e) => {
+            const currentRoute = navigationRef.current?.getCurrentRoute()?.name;
+            const nestedRoutes = ["HabitDetails"];
+            if (nestedRoutes.includes(currentRoute)) {
+              e.preventDefault();
+              navigation.navigate("Habits", { screen: "HabitList" });
+            }
+          },
+        })}
+      />
       {/* challenges */}
       <Tab.Screen
         name="Challenges"
         component={ChallengesContainer} // Replace with actual Challenges screen
         options={{
-          popToTopOnBlur: true,
+          popToTopOnBlur: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="trophy-outline" size={size} color={color} />
+            <Ionicons name="trophy" size={size} color={color} />
           ),
         }}
         listeners={({ navigation }) => ({
@@ -340,29 +377,36 @@ const MainContainer = () => {
           },
         })}
       />
+
       {/* community */}
       <Tab.Screen
         name="Community"
         component={FriendsContainer} // Replace with actual Community screen
         options={{
-          popToTopOnBlur: true,
+          tabBarLabel: "Community",
+          popToTopOnBlur: false,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="people-outline" size={size} color={color} />
+            <FontAwsome name="users" size={size} color={color} />
           ),
         }}
         listeners={({ navigation }) => ({
           tabPress: (e) => {
             const currentRoute = navigationRef.current?.getCurrentRoute()?.name;
-            const nestedRoutes = ["Chat", "Search", "FriendProfile"];
+            const nestedRoutes = [
+              "Chat",
+              "Search",
+              "FriendProfile",
+              "FriendsList",
+            ];
             if (nestedRoutes.includes(currentRoute)) {
               e.preventDefault();
-              navigation.navigate("Community", { screen: "FriendsList" });
+              navigation.navigate("Community", { screen: "Feed" });
             }
           },
         })}
       />
       {/* content */}
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Content"
         component={ContentContainer}
         options={{
@@ -381,13 +425,13 @@ const MainContainer = () => {
             }
           },
         })}
-      />
+      /> */}
       <Tab.Screen
         name="Profile"
         component={ProfileScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person-outline" size={size} color={color} />
+            <Ionicons name="person" size={size} color={color} />
           ),
         }}
       />

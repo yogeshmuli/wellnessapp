@@ -1,8 +1,9 @@
-import { View, Text, TouchableOpacity, StatusBar } from "react-native";
-import { Colors, Spacing, Typography } from "../../styles"; // Adjust the import path as necessary
-
+import { View, TouchableOpacity, StatusBar } from "react-native";
+import { Spacing, Typography } from "../../styles"; // Adjust the import path as necessary
+import Text from "../../components/text";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { useTheme } from "../../hooks/useTheme";
 
 import {
   GiftedChat,
@@ -35,6 +36,7 @@ function FriendChat() {
   const [loading, setLoading] = useState(false);
   const [isLoadingEarlier, setIsLoadingEarlier] = useState(false);
   const userId = useSelector((state) => state.user.userData.id);
+  const { Colors } = useTheme();
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -110,13 +112,18 @@ function FriendChat() {
   };
 
   const onSend = useCallback((newMessages = []) => {
-    let mappedMessages = mapGiftedChatMessageToAPI(newMessages[0]);
-    socket.emit("sendMessage", {
-      ...mappedMessages,
-    });
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, newMessages)
-    );
+    debugger;
+    try {
+      let mappedMessages = mapGiftedChatMessageToAPI(newMessages[0]);
+      socket.emit("sendMessage", {
+        ...mappedMessages,
+      });
+      setMessages((previousMessages) =>
+        GiftedChat.append(previousMessages, newMessages)
+      );
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   }, []);
 
   const onLoadEarlier = async () => {
@@ -153,7 +160,7 @@ function FriendChat() {
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bodyBackground }}>
         <LoadingOverlay visible={loading} />
         <KeyboardAvoidingView
           style={{ flex: 1 }}
@@ -166,7 +173,7 @@ function FriendChat() {
               flexDirection: "row",
               alignItems: "center",
               borderBottomWidth: 1,
-              borderBottomColor: Colors.lightGray,
+              borderBottomColor: Colors.lightBorder,
               marginBottom: Spacing.medium,
             }}
           >
@@ -174,7 +181,7 @@ function FriendChat() {
               style={{ flexDirection: "row", alignItems: "center" }}
               onPress={() => navigation.goBack()}
             >
-              <Icon name="chevron-left" size={24} color={Colors.black} />
+              <Icon name="chevron-left" size={24} color={Colors.text} />
 
               <View
                 style={{ marginLeft: Spacing.medium, flexDirection: "row" }}
@@ -185,13 +192,13 @@ function FriendChat() {
                   <Ionicons
                     name="person-circle-outline"
                     size={40}
-                    color={Colors.gray}
+                    color={Colors.text}
                   />
                 )}
                 <Text
                   style={{
-                    fontSize: Typography.fontSizeMedium,
-                    fontWeight: Typography.fontFamilyMedium,
+                    fontSize: 16,
+                    fontWeight: Typography.fontFamilyBold,
                     marginLeft: Spacing.medium,
                   }}
                 >
@@ -229,6 +236,7 @@ function FriendChat() {
             onLoadEarlier={onLoadEarlier}
             isLoadingEarlier={isLoadingEarlier}
             loadEarlier={true}
+
             // renderLoadEarlier={}
           />
         </KeyboardAvoidingView>
@@ -237,58 +245,63 @@ function FriendChat() {
   );
 }
 
-const CustomInputToolbar = (props) => (
-  <View
-    style={{
-      flexDirection: "row",
-      alignItems: "center",
-      height: 60,
-    }}
-  >
-    {/* Example: Add an attachment button */}
-    {/* <Actions
+const CustomInputToolbar = (props) => {
+  const { Colors } = useTheme();
+  return (
+    <View
+      style={{
+        flexDirection: "row",
+        alignItems: "center",
+        height: 60,
+      }}
+    >
+      {/* Example: Add an attachment button */}
+      {/* <Actions
       {...props}
       containerStyle={{
         alignSelf: "center",
         marginBottom: 0,
       }}
     /> */}
-    {/* Composer (text input) */}
-    <Composer
-      {...props}
-      multiline={true}
-      composerHeight={40}
-      textInputStyle={{
-        color: Colors.text,
-        backgroundColor: Colors.grayBg,
-        borderRadius: 20,
-        paddingHorizontal: 16,
-        marginHorizontal: 8,
-        paddingVertical: 8,
+      {/* Composer (text input) */}
+      <Composer
+        {...props}
+        multiline={true}
+        composerHeight={50}
+        textInputStyle={{
+          color: Colors.text,
+          backgroundColor: Colors.nestedDark,
+          borderRadius: 12,
+          paddingHorizontal: 16,
+          marginHorizontal: 8,
+          paddingVertical: 10,
+          borderWidth: 1,
+          borderColor: Colors.lightBorder,
 
-        flex: 1,
-        textAlignVertical: "center",
-      }}
-      placeholder="Type your message..."
-    />
-    {/* Send button */}
-    <Send
-      {...props}
-      containerStyle={{
-        marginBottom: 0,
-        alignSelf: "center",
-
-        justifyContent: "center",
-      }}
-    >
-      <Ionicons
-        name="send-outline"
-        size={28}
-        color={Colors.primary}
-        style={{ marginRight: 8 }}
+          flex: 1,
+          textAlignVertical: "center",
+        }}
+        placeholder="Type your message..."
       />
-    </Send>
-  </View>
-);
+      {/* Send button */}
+      <Send
+        {...props}
+        containerStyle={{
+          marginBottom: 0,
+          alignSelf: "center",
+
+          justifyContent: "center",
+        }}
+      >
+        <Ionicons
+          name="send-outline"
+          size={28}
+          color={Colors.primary}
+          style={{ marginRight: 8 }}
+        />
+      </Send>
+    </View>
+  );
+};
 
 export default FriendChat;

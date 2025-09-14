@@ -5,11 +5,13 @@ import notificationReducer from "./slices/notification";
 import challengesReducer from "./slices/challenge";
 import friendsReducer from "./slices/friends";
 import contentReducer from "./slices/content";
+import habitsReducer from "./slices/habits";
 
 let Store = configureStore({
   reducer: {
     auth: authReducer,
     user: userReducer,
+    habits: habitsReducer,
     friends: friendsReducer,
     notification: notificationReducer,
     challenge: challengesReducer,

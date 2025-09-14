@@ -5,7 +5,7 @@ import RootContainer from './src/containers/root';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 ;
 import { SocketProvider } from './src/hooks/useSocket';
-
+import { ThemeProvider } from "./src/hooks/useTheme";
 
 
 const App = () => {
@@ -13,12 +13,15 @@ const App = () => {
   return (
     <>
       <SafeAreaProvider>
+        <ThemeProvider>
 
-        <Provider store={Store}>
-          <SocketProvider>
-            <RootContainer />
-          </SocketProvider>
-        </Provider>
+
+          <Provider store={Store}>
+            <SocketProvider>
+              <RootContainer />
+            </SocketProvider>
+          </Provider>
+        </ThemeProvider>
 
       </SafeAreaProvider>
 

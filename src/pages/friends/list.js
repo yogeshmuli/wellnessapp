@@ -1,14 +1,14 @@
 import React, { useEffect } from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   ScrollView,
   RefreshControl,
   FlatList,
 } from "react-native";
+import Text from "../../components/text";
 
-import { Colors, Spacing, Typography } from "../../styles"; // Adjust the import path as necessary
+import { Spacing, Typography } from "../../styles"; // Adjust the import path as necessary
 import Ionicons from "react-native-vector-icons/Ionicons";
 import LoadingOverlay from "../../components/loadingOverlay";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -23,6 +23,9 @@ import {
 import { Avatars } from "../../components/avatars";
 import { useSocket } from "../../hooks/useSocket";
 import SafeAreaView from "../../components/safearea";
+import { SolidButton } from "../../components/buttons";
+import FontAwesome from "react-native-vector-icons/FontAwesome5";
+import { useTheme } from "../../hooks/useTheme";
 
 // Friends List Component
 const FriendsList = () => {
@@ -34,18 +37,15 @@ const FriendsList = () => {
     friendsReducer.friendsList
   );
 
-  const pageMountedRef = React.useRef(false);
   const { socket } = useSocket();
   const [friendRequests, setFriendRequests] = React.useState(
     friendsReducer.friendRequests
   );
   const navigation = useNavigation();
+  const { Colors } = useTheme();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setTimeout(() => {
-      pageMountedRef.current = true;
-    }, 1000);
     socket.on("notification", (notification) => {
       let type = notification.type;
       switch (type) {
@@ -68,7 +68,7 @@ const FriendsList = () => {
 
   useFocusEffect(
     React.useCallback(() => {
-      fetchFriendsWithOutLoading();
+      fetchFriends();
     }, [])
   );
 
@@ -134,314 +134,331 @@ const FriendsList = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white }}>
-      <LoadingOverlay visible={loading} />
-      <View
-        style={{
-          display: "flex",
-          marginTop: Spacing.medium,
-          marginBottom: Spacing.large,
-          paddingHorizontal: Spacing.large,
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignSelf: "flex-start",
-          width: "100%",
-        }}
-      >
-        <Text
-          style={{ fontSize: Typography.fontSizeLarge, fontWeight: "bold" }}
-        >
-          Community
-        </Text>
-        {/* search and filter */}
-        <View style={{ flexDirection: "row", marginLeft: "auto" }}>
-          <TouchableOpacity onPress={() => navigation.navigate("Search")}>
-            <Ionicons name="search" size={28} color={Colors.gray} />
-          </TouchableOpacity>
-          <TouchableOpacity style={{ marginLeft: Spacing.medium }}>
-            <Ionicons name="filter" size={28} color={Colors.gray} />
-          </TouchableOpacity>
-        </View>
-      </View>
-      {friendships.length === 0 && friendRequests.length === 0 ? (
+    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bodyBackground }}>
+      <LoadingOverlay visible={loading && friendships.length === 0} />
+      <View style={{ flex: 1, paddingHorizontal: 17.5 }}>
         <View
           style={{
-            justifyContent: "center",
+            display: "flex",
+            marginTop: Spacing.medium,
+            marginBottom: Spacing.large,
+
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignSelf: "flex-start",
             alignItems: "center",
-            backgroundColor: Colors.white,
-            alignSelf: "center",
+            width: "100%",
           }}
         >
-          <Text
+          <TouchableOpacity
             style={{
-              fontSize: Typography.fontSizeMedium,
-              color: Colors.textSecondary,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+            onPress={() => navigation.goBack()}
+          >
+            <FontAwesome name="chevron-left" size={24} color={Colors.text} />
+            <View style={{ width: Spacing.small }} />
+            <Text
+              style={{
+                fontSize: Typography.fontSizeLarge,
+                fontFamily: Typography.fontFamilyBold,
+                padding: 0,
+              }}
+            >
+              Community
+            </Text>
+          </TouchableOpacity>
+          {/* search and filter */}
+          <View
+            style={{
+              flexDirection: "row",
+              marginLeft: "auto",
+              alignItems: "center",
             }}
           >
-            No friends found. Start adding friends!
-          </Text>
+            <SolidButton
+              title={"Explore"}
+              icon={
+                <View style={{ marginRight: Spacing.small }}>
+                  <Ionicons name="search" size={20} color={Colors.white} />
+                </View>
+              }
+              style={{
+                height: 40,
+                fontSize: 16,
+                paddingHorizontal: Spacing.medium,
+                paddingVertical: Spacing.small,
+                backgroundColor: Colors.info,
+              }}
+              onPress={() => navigation.navigate("Search")}
+            />
+          </View>
         </View>
-      ) : (
-        <View
-          style={{
-            flex: 1,
-            paddingHorizontal: Spacing.large,
-            paddingBottom: Spacing.medium,
-            flexDirection: "column",
-            justifyContent: "flex-start",
-            alignItems: "stretch",
-          }}
-        >
-          <FlatList
-            contentContainerStyle={{}}
-            ListHeaderComponent={() => {
-              return (
-                <>
-                  {friendRequests.length > 0 && (
-                    <View>
-                      {/* Friend Requests section */}
-                      <Text
-                        style={{
-                          fontSize: Typography.fontSizeMedium,
-                          fontWeight: "bold",
-                          marginBottom: Spacing.small,
-                          color: Colors.textPrimary,
-                          fontFamily: Typography.fontFamilyBold,
-                        }}
-                      >
-                        Requests
-                      </Text>
-                      {friendRequests.map((request) => (
-                        <View
-                          key={request.id}
+        {friendships.length === 0 && friendRequests.length === 0 ? (
+          <View
+            style={{
+              justifyContent: "center",
+              alignItems: "center",
+
+              alignSelf: "center",
+            }}
+          >
+            <Text
+              style={{
+                fontSize: Typography.fontSizeMedium,
+                color: Colors.textSecondary,
+              }}
+            >
+              No friends found. Start adding friends!
+            </Text>
+          </View>
+        ) : (
+          <View
+            style={{
+              flex: 1,
+
+              paddingBottom: Spacing.medium,
+              flexDirection: "column",
+              justifyContent: "flex-start",
+              alignItems: "stretch",
+            }}
+          >
+            <FlatList
+              contentContainerStyle={{}}
+              ListHeaderComponent={() => {
+                return (
+                  <>
+                    {friendRequests.length > 0 && (
+                      <View>
+                        {/* Friend Requests section */}
+                        <Text
                           style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            paddingVertical: Spacing.small,
-
-                            borderBottomWidth: 1,
-                            borderBottomColor: Colors.lightGray,
-
-                            height: 97,
+                            fontSize: Typography.fontSizeMedium,
+                            fontWeight: "bold",
+                            marginBottom: Spacing.small,
+                            color: Colors.text,
+                            fontFamily: Typography.fontFamilyBold,
                           }}
                         >
-                          {request?.friend?.photoUrl ? (
-                            <Avatars
-                              imageSource={{ uri: request?.friend?.photoUrl }}
-                              size={60}
-                            />
-                          ) : (
-                            <Ionicons
-                              name="person-circle-outline"
-                              size={60}
-                              color={Colors.gray}
-                            />
-                          )}
-                          {/* name and tagline */}
+                          Requests
+                        </Text>
+                        {friendRequests.map((request) => (
                           <View
-                            style={{
-                              flexDirection: "column",
-                              justifyContent: "flex-start",
-                              alignItems: "flex-start",
-                            }}
-                          >
-                            <Text
-                              style={{
-                                marginLeft: Spacing.small,
-                                fontSize: Typography.fontSizeMedium,
-                                color: Colors.text,
-                              }}
-                            >
-                              {request?.friend?.displayName}
-                            </Text>
-                            <Text
-                              style={{
-                                marginLeft: Spacing.small,
-                                fontSize: 14,
-                                color: Colors.gray,
-                              }}
-                            >
-                              {request?.friend?.tagLine ?? "No tagline"}
-                            </Text>
-                          </View>
-                          {/* action buttons */}
-                          <View
+                            key={request.id}
                             style={{
                               flexDirection: "row",
-                              marginLeft: "auto",
-                              alignItems: "center",
+                              alignItems: "flex-start",
+                              paddingVertical: Spacing.small,
+
+                              borderBottomWidth: 1,
+                              borderBottomColor: Colors.lightBorder,
                             }}
                           >
-                            <TouchableOpacity
-                              style={{
-                                paddingHorizontal: Spacing.small,
-                                paddingVertical: Spacing.small,
-                                borderRadius: Spacing.small,
-                              }}
-                              onPress={() =>
-                                navigation.navigate("FriendProfile", {
-                                  userId: request?.friend?.id,
-                                  friendshipsStatus: request.friendshipStatus,
-                                  friendshipId: request.id,
-                                })
-                              }
-                            >
+                            {request?.friend?.photoUrl ? (
+                              <Avatars
+                                imageSource={{ uri: request?.friend?.photoUrl }}
+                                size={60}
+                              />
+                            ) : (
                               <Ionicons
-                                name="eye-outline"
-                                size={24}
+                                name="person-circle-outline"
+                                size={60}
                                 color={Colors.text}
                               />
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                              onPress={() => onAccept(request.id)}
+                            )}
+                            {/* name and tagline */}
+                            <View
                               style={{
-                                paddingHorizontal: Spacing.small,
-                                paddingVertical: Spacing.small,
-                                borderRadius: Spacing.small,
+                                flexDirection: "column",
+                                justifyContent: "flex-start",
+                                alignItems: "flex-start",
+                                flex: 1,
                               }}
                             >
-                              <Ionicons
-                                name="checkmark-circle-outline"
-                                size={24}
-                                color={Colors.primary}
-                              />
-                            </TouchableOpacity>
-                            <TouchableOpacity
+                              <Text
+                                style={{
+                                  marginLeft: Spacing.small,
+                                  fontSize: 16,
+                                  color: Colors.text,
+
+                                  fontFamily: Typography.fontFamilyBold,
+                                }}
+                              >
+                                {request?.friend?.displayName}
+                              </Text>
+                              <Text
+                                style={{
+                                  marginLeft: Spacing.small,
+                                  fontSize: 14,
+                                  color: Colors.gray,
+                                }}
+                              >
+                                {request?.friend?.tagLine ?? "No tagline"}
+                              </Text>
+                            </View>
+                            {/* action buttons */}
+                            <View
                               style={{
-                                paddingHorizontal: Spacing.small,
-                                paddingVertical: Spacing.small,
-                                borderRadius: Spacing.small,
-                                marginLeft: Spacing.small,
+                                flexDirection: "row",
+                                marginLeft: "auto",
+                                alignItems: "center",
                               }}
-                              onPress={() => onReject(request.friend.id)}
                             >
-                              <Ionicons
-                                name="close-circle-outline"
-                                size={24}
-                                color={Colors.red}
+                              <SolidButton
+                                title={"Respond"}
+                                icon={
+                                  <View style={{ marginRight: Spacing.small }}>
+                                    <Ionicons
+                                      name="person-add"
+                                      size={20}
+                                      color={Colors.white}
+                                    />
+                                  </View>
+                                }
+                                style={{
+                                  height: 50,
+                                  fontSize: 16,
+                                  paddingHorizontal: Spacing.medium,
+                                  paddingVertical: Spacing.small,
+                                  backgroundColor: Colors.primary,
+                                }}
+                                onPress={() =>
+                                  navigation.navigate("FriendProfile", {
+                                    userId: request?.friend?.id,
+                                    friendshipsStatus: request.friendshipStatus,
+                                    friendshipId: request.id,
+                                  })
+                                }
                               />
-                            </TouchableOpacity>
+                            </View>
                           </View>
-                        </View>
-                      ))}
-                    </View>
-                  )}
-                  <Text
-                    style={{
-                      fontSize: Typography.fontSizeMedium,
-                      fontWeight: "bold",
-                      marginBottom: Spacing.small,
-                      color: Colors.textPrimary,
-                      fontFamily: Typography.fontFamilyBold,
-                    }}
-                  >
-                    Friends
-                  </Text>
-                </>
-              );
-            }}
-            data={friendships}
-            renderItem={({ item: friendship }) => (
-              <View
-                key={friendship?.friend?.id}
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  paddingVertical: Spacing.small,
-
-                  borderBottomWidth: 1,
-                  borderBottomColor: Colors.lightGray,
-
-                  height: 97,
-                }}
-              >
-                {friendship?.friend?.photoUrl ? (
-                  <Avatars
-                    imageSource={{ uri: friendship?.friend?.photoUrl }}
-                    size={60}
-                  />
-                ) : (
-                  <Ionicons
-                    name="person-circle-outline"
-                    size={60}
-                    color={Colors.gray}
-                  />
-                )}
-                {/* name and tagline */}
-                <TouchableOpacity
-                  style={{
-                    paddingHorizontal: Spacing.small,
-                    paddingVertical: Spacing.small,
-                    borderRadius: Spacing.small,
-                  }}
-                  onPress={() =>
-                    navigation.navigate("FriendProfile", {
-                      userId: friendship?.friend?.id,
-                      friendshipsStatus: friendship.friendshipStatus,
-                      friendshipId: friendship.id,
-                    })
-                  }
-                >
-                  <View
-                    style={{
-                      flexDirection: "column",
-                      justifyContent: "flex-start",
-                      alignItems: "flex-start",
-                    }}
-                  >
+                        ))}
+                      </View>
+                    )}
                     <Text
                       style={{
-                        marginLeft: Spacing.small,
                         fontSize: Typography.fontSizeMedium,
+                        fontWeight: "bold",
+                        marginBottom: Spacing.small,
                         color: Colors.text,
+                        fontFamily: Typography.fontFamilyBold,
+                        marginTop:
+                          friendRequests.length > 0 ? Spacing.medium : 0,
                       }}
                     >
-                      {friendship?.friend?.displayName}
+                      Friends
                     </Text>
-                    <Text
-                      style={{
-                        marginLeft: Spacing.small,
-                        fontSize: 14,
-                        color: Colors.gray,
-                      }}
-                    >
-                      {friendship?.friend?.tagLine ?? "No tagline"}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-                {/* action buttons */}
+                  </>
+                );
+              }}
+              data={friendships}
+              renderItem={({ item: friendship }) => (
                 <View
+                  key={friendship?.friend?.id}
                   style={{
                     flexDirection: "row",
-                    marginLeft: "auto",
                     alignItems: "center",
+                    paddingVertical: Spacing.small,
+
+                    borderBottomWidth: 1,
+                    borderBottomColor: Colors.lightBorder,
                   }}
                 >
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate("Chat", {
-                        friend: friendship?.friend,
-                      })
-                    }
-                    style={{
-                      paddingHorizontal: Spacing.small,
-                      paddingVertical: Spacing.small,
-                      borderRadius: Spacing.small,
-                    }}
-                  >
+                  {friendship?.friend?.photoUrl ? (
+                    <Avatars
+                      imageSource={{ uri: friendship?.friend?.photoUrl }}
+                      size={60}
+                    />
+                  ) : (
                     <Ionicons
-                      name="chatbubble-outline"
-                      size={24}
+                      name="person-circle-outline"
+                      size={60}
                       color={Colors.text}
                     />
+                  )}
+                  {/* name and tagline */}
+                  <TouchableOpacity
+                    style={{
+                      paddingHorizontal: 0,
+                    }}
+                    onPress={() =>
+                      navigation.navigate("FriendProfile", {
+                        userId: friendship?.friend?.id,
+                        friendshipsStatus: friendship.friendshipStatus,
+                        friendshipId: friendship.id,
+                      })
+                    }
+                  >
+                    <View
+                      style={{
+                        flexDirection: "column",
+                        justifyContent: "flex-start",
+                        alignItems: "flex-start",
+                      }}
+                    >
+                      <Text
+                        style={{
+                          marginLeft: Spacing.small,
+                          fontSize: 16,
+                          // fontWeight: "bold",
+                          fontFamily: Typography.fontFamilyBold,
+                          color: Colors.text,
+                        }}
+                      >
+                        {friendship?.friend?.displayName}
+                      </Text>
+                      <Text
+                        style={{
+                          marginLeft: Spacing.small,
+                          fontSize: 14,
+                          color: Colors.gray,
+                        }}
+                      >
+                        {friendship?.friend?.tagLine ?? "No tagline"}
+                      </Text>
+                    </View>
                   </TouchableOpacity>
+                  {/* action buttons */}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      marginLeft: "auto",
+                      alignItems: "center",
+                    }}
+                  >
+                    <SolidButton
+                      title={"Chat"}
+                      icon={
+                        <View style={{ marginRight: Spacing.small }}>
+                          <Ionicons
+                            name="chatbubbles"
+                            size={20}
+                            color={Colors.white}
+                          />
+                        </View>
+                      }
+                      style={{
+                        height: 50,
+                        fontSize: 16,
+                        paddingHorizontal: Spacing.medium,
+                        paddingVertical: Spacing.small,
+                        backgroundColor: Colors.primary,
+                      }}
+                      onPress={() =>
+                        navigation.navigate("Chat", {
+                          friend: friendship?.friend,
+                        })
+                      }
+                    />
+                  </View>
                 </View>
-              </View>
-            )}
-            keyExtractor={(item) => item.id}
-          />
-        </View>
-      )}
+              )}
+              keyExtractor={(item) => item.id}
+            />
+          </View>
+        )}
+      </View>
     </SafeAreaView>
   );
 };
