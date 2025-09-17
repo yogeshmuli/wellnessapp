@@ -1,5 +1,6 @@
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { View, StatusBar, useColorScheme, Platform } from "react-native";
+import { useTheme } from "../../hooks/useTheme";
 
 const SafeAreaView = ({
   children,
@@ -12,7 +13,8 @@ const SafeAreaView = ({
   const colorScheme = useColorScheme();
 
   // Default colors based on system theme
-  const isDark = true;
+  const isDark = useTheme().themeMode === "dark";
+
   const defaultBarColor = isDark ? "#000" : "#fff";
   const defaultBarStyle = isDark ? "light-content" : "dark-content";
 

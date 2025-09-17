@@ -16,7 +16,7 @@ const friendsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(RESET_APP, (state) => {
-        state = initialState;
+        return initialState;
       })
 
       .addCase(fetchFriendRequests.pending, (state) => {

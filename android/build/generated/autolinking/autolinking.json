@@ -1014,7 +1014,7 @@
     "android": {}
   },
   "assets": [
-    "./src/assets/fonts/inter"
+    "./src/assets/fonts/Montserrat"
   ],
   "project": {
     "ios": {

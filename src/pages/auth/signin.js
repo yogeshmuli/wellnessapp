@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import LoadingOverlay from "../../components/loadingOverlay";
 import SafeAreaView from "../../components/safearea/index";
 import { useTheme } from "../../hooks/useTheme";
+import Toast from "react-native-toast-message";
 
 // Validation function for signin
 const validate = (name, value) => {
@@ -57,6 +58,11 @@ const Signin = () => {
         })
         .catch((error) => {
           setLoading(false);
+          Toast.show({
+            type: "error",
+            text1: "Login Failed",
+            text2: error.message || "An error occurred during login.",
+          });
         });
     });
   };
@@ -96,7 +102,7 @@ const Signin = () => {
                 textAlign: "center",
               }}
             >
-              Welcome Back, Brother
+              Welcome Back, member
             </Text>
             <Text
               style={{

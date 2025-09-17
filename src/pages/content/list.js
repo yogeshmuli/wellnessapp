@@ -54,7 +54,10 @@ const ContentList = () => {
         }}
       >
         <Text
-          style={{ fontSize: Typography.fontSizeLarge, fontWeight: "bold" }}
+          style={{
+            fontSize: Typography.fontSizeLarge,
+            fontFamily: Typography.fontFamilyBold,
+          }}
         >
           Explore Content
         </Text>

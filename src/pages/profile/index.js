@@ -47,7 +47,7 @@ const Profile = () => {
   });
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const { Colors, getActiveTheme, changeTheme } = useTheme();
+  const { Colors, getActiveTheme, changeTheme, themeMode } = useTheme();
 
   const route = useRoute();
 
@@ -63,11 +63,9 @@ const Profile = () => {
     } else {
       setIsPersonalProfile(false);
     }
-    getActiveTheme().then((themePreference) => {
-      setTheme({
-        label: themePreference === "dark" ? "Dark" : "Light",
-        value: themePreference,
-      });
+    setTheme({
+      label: themeMode === "dark" ? "Dark" : "Light",
+      value: themeMode,
     });
   }, [route.params]);
 
@@ -231,7 +229,7 @@ const Profile = () => {
               <Ionicons
                 name="log-out"
                 size={16}
-                color={Colors.text}
+                color={Colors.white}
                 style={{ marginRight: 8 }}
               />
             }
@@ -245,7 +243,7 @@ const Profile = () => {
               borderRadius: 12,
             }}
             textStyle={{
-              color: Colors.text,
+              color: Colors.white,
             }}
             onPress={onLogout}
           />
@@ -255,7 +253,7 @@ const Profile = () => {
     if (isPersonalProfile && isEditingView) {
       return (
         <SolidButton
-          style={{ width: "100%" }}
+          style={{ width: "100%", marginTop: Spacing.large }}
           title="Save Changes"
           onPress={saveProfileChanges}
         />
@@ -364,7 +362,7 @@ const Profile = () => {
             <Text
               style={{
                 fontSize: Typography.fontSizeLarge,
-                fontWeight: "bold",
+                fontFamily: Typography.fontFamilyBold,
                 marginLeft: Spacing.small,
               }}
             >
@@ -501,7 +499,7 @@ const Profile = () => {
             <View
               style={{
                 backgroundColor: Colors.cardBackground,
-                height: 200,
+
                 width: "100%",
                 justifyContent: "flex-start",
                 alignItems: "center",
@@ -785,40 +783,43 @@ const Profile = () => {
                     >
                       <ProgressBar
                         progress={parseInt(item.totalProgress) || 0}
-                        color={getColorByFocusArea(item.name)}
+                        color={getColorByFocusArea(item)}
                       />
                     </View>
                   </View>
                 ))}
             </View>
             {/* Theme Preference */}
-            <View
-              style={{
-                height: 120,
-                backgroundColor: Colors.cardBackground,
-                width: "100%",
-                justifyContent: "center",
-                alignItems: "center",
+            {isPersonalProfile && (
+              <View
+                style={{
+                  height: 120,
+                  backgroundColor: Colors.cardBackground,
+                  width: "100%",
+                  justifyContent: "center",
+                  alignItems: "center",
 
-                paddingHorizontal: 17,
-                borderRadius: 12,
-                marginTop: Spacing.medium,
-              }}
-            >
-              <SelectInput
-                label="Theme Preference"
-                options={[
-                  {
-                    label: "Light",
-                    value: "light",
-                  },
-                  { label: "Dark", value: "dark" },
-                ]}
-                placeholder="Select your theme"
-                value={theme}
-                onChange={handleThemeChange}
-              />
-            </View>
+                  paddingHorizontal: 17,
+                  borderRadius: 12,
+                  marginTop: Spacing.medium,
+                }}
+              >
+                <SelectInput
+                  label="Theme Preference"
+                  options={[
+                    {
+                      label: "Light",
+                      value: "light",
+                    },
+                    { label: "Dark", value: "dark" },
+                  ]}
+                  placeholder="Select your theme"
+                  value={theme}
+                  disabled={isEditingView ? false : true}
+                  onChange={handleThemeChange}
+                />
+              </View>
+            )}
 
             {/* Email div */}
 
@@ -833,6 +834,7 @@ const Profile = () => {
                 paddingHorizontal: 17,
                 borderRadius: 12,
                 marginTop: Spacing.medium,
+                marginBottom: Spacing.small,
               }}
             >
               <CustomInput
@@ -893,7 +895,7 @@ const Profile = () => {
                     <Text
                       style={{
                         fontSize: 18,
-                        fontWeight: "bold",
+                        fontFamily: Typography.fontFamilyBold,
                         marginBottom: 16,
                       }}
                     >

@@ -14,7 +14,7 @@ const contentSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder.addCase(RESET_APP, (state) => {
-      state = initialState;
+      return initialState;
     });
     builder.addCase(fetchContent.pending, (state) => {
       state.loading = true;

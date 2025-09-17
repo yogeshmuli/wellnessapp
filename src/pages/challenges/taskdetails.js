@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   TextInput,
+  KeyboardAvoidingView,
 } from "react-native";
 import Text from "../../components/text";
 
@@ -88,20 +89,25 @@ const AudioComponent = ({ audioInfo }) => {
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [audioUrl, setAudioUrl] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
+
   const { position, duration } = useProgress(1000);
   const { Colors } = useTheme();
   React.useEffect(() => {
     const fetchAudioUrl = async () => {
       try {
         const url = await getDownloadURLForReference(audioInfo?.url);
+        const posterUrl = await getDownloadURLForReference(
+          audioInfo?.posterUrl
+        );
+        console.log("Poster URL:", posterUrl);
         await setupTrackPlayer();
-        await TrackPlayer.reset();
-        console.log(audioInfo);
+        // await TrackPlayer.reset();
+
         await TrackPlayer.add({
           id: audioInfo.id,
           url: url,
           title: audioInfo.title,
-          artwork: audioInfo.posterUrl,
+          artwork: posterUrl,
           artist: audioInfo.artist || "Unknown Artist",
         });
         //  await TrackPlayer.play();
@@ -112,6 +118,10 @@ const AudioComponent = ({ audioInfo }) => {
       }
     };
     fetchAudioUrl();
+    return () => {
+      console.log("Cleaning up TrackPlayer...");
+      TrackPlayer.reset();
+    };
   }, [audioInfo]);
 
   useTrackPlayerEvents([Event.PlaybackState], (event) => {
@@ -125,8 +135,6 @@ const AudioComponent = ({ audioInfo }) => {
 
   const play = async () => {
     try {
-      let list = await TrackPlayer.getQueue();
-
       await TrackPlayer.play();
     } catch (error) {
       console.error("Error playing track:", error);
@@ -390,211 +398,216 @@ const TaskDetails = () => {
         <View style={{ width: 30 }} />
         {/* Placeholder for alignment */}
       </View>
-      <ScrollView style={{ flex: 1 }}>
-        <View
-          style={{
-            flexDirection: "column",
-            alignItems: "flex-start",
-            padding: 17.5,
-          }}
-        >
-          {/* Media Component */}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 20 : 0} // 80 = tab bar height, adjust as needed
+      >
+        <ScrollView style={{ flex: 1 }}>
           <View
             style={{
-              width: "100%",
-              marginBottom: 16,
-              backgroundColor: Colors.nestedDark,
-              borderRadius: 12,
-              overflow: "hidden",
+              flexDirection: "column",
+              alignItems: "flex-start",
+              padding: 17.5,
             }}
           >
-            {renderMediaComponent()}
+            {/* Media Component */}
             <View
               style={{
-                flexDirection: "column",
-                paddingHorizontal: 16,
-                paddingVertical: 12,
+                width: "100%",
+                marginBottom: 16,
+                backgroundColor: Colors.nestedDark,
+                borderRadius: 12,
+                overflow: "hidden",
               }}
             >
-              <Text
+              {renderMediaComponent()}
+              <View
                 style={{
-                  fontSize: 16,
-                  fontFamily: Typography.fontFamilyMedium,
+                  flexDirection: "column",
+                  paddingHorizontal: 16,
+                  paddingVertical: 12,
                 }}
               >
-                {details.media?.title}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontFamily: Typography.fontFamily,
-                  color: Colors.textSecondary,
-                }}
-              >
-                {details.media?.body}
-              </Text>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: Typography.fontFamilyMedium,
+                  }}
+                >
+                  {details.media?.title}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    fontFamily: Typography.fontFamily,
+                    color: Colors.textSecondary,
+                  }}
+                >
+                  {details.media?.body}
+                </Text>
+              </View>
             </View>
-          </View>
-          {/* Activity */}
-          {details.activity && (
-            <View style={{ width: "100%", marginBottom: 16 }}>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontFamily: Typography.fontFamilyMedium,
-                  marginBottom: 8,
-                  color: Colors.text,
-                }}
-              >
-                Activity
-              </Text>
-              {/* title text */}
-              <Text
-                style={{
-                  fontSize: 16,
-                  color: Colors.textSecondary,
-                }}
-              >
-                {details.activity.text}
-              </Text>
-              {details.activity.children &&
-                details.activity.children.length > 0 && (
-                  <View style={{ marginTop: 8, marginLeft: 8 }}>
-                    {details.activity.children.map((child, index) => (
-                      <View
-                        key={index}
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "flex-start",
-                          marginBottom: 6,
-                        }}
-                      >
-                        <FontAwesome
-                          name="circle"
-                          size={10}
-                          color={mainColor}
-                          style={{ marginRight: 8, marginTop: 6 }}
-                        />
-                        <Text
+            {/* Activity */}
+            {details.activity && (
+              <View style={{ width: "100%", marginBottom: 16 }}>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: Typography.fontFamilyMedium,
+                    marginBottom: 8,
+                    color: Colors.text,
+                  }}
+                >
+                  Activity
+                </Text>
+                {/* title text */}
+                <Text
+                  style={{
+                    fontSize: 16,
+                    color: Colors.textSecondary,
+                  }}
+                >
+                  {details.activity.text}
+                </Text>
+                {details.activity.children &&
+                  details.activity.children.length > 0 && (
+                    <View style={{ marginTop: 8, marginLeft: 8 }}>
+                      {details.activity.children.map((child, index) => (
+                        <View
                           key={index}
                           style={{
-                            fontSize: 16,
-                            color: Colors.textSecondary,
-                            paddingVertical: 0,
-                          }}
-                        >
-                          {child}
-                        </Text>
-                      </View>
-                    ))}
-                  </View>
-                )}
-            </View>
-          )}
-          {/* key takeaways */}
-          {details.keyTakeaways && details.keyTakeaways.length > 0 && (
-            <>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontFamily: Typography.fontFamilyMedium,
-                  marginBottom: 8,
-                  color: Colors.text,
-                }}
-              >
-                Key Takeaways
-              </Text>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: Colors.textSecondary,
-                }}
-              >
-                {details.keyTakeaways &&
-                  details.keyTakeaways.map((item, index) => {
-                    return (
-                      <View
-                        key={index}
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "flex-start",
-                        }}
-                      >
-                        <FontAwesome
-                          name="circle"
-                          size={10}
-                          color={mainColor}
-                          style={{ marginRight: 8, marginTop: 6 }}
-                        />
-                        <Text
-                          style={{
-                            fontSize: 16,
-                            color: Colors.textSecondary,
-                            flex: 1,
-                            flexWrap: "wrap",
-                            paddingVertical: 0,
+                            flexDirection: "row",
+                            alignItems: "flex-start",
                             marginBottom: 6,
                           }}
                         >
-                          {item}
-                        </Text>
-                      </View>
-                    );
-                  })}
-              </Text>
-            </>
-          )}
-          {/* Your Reflection */}
-          {details.userTaskStatus !== "COMPLETED" && (
-            <>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontFamily: Typography.fontFamilyMedium,
-                  marginBottom: 8,
-                  color: Colors.text,
-                }}
-              >
-                Your Reflection
-              </Text>
-              <TextInput
-                style={{
-                  borderRadius: 12,
-                  fontSize: 16,
-                  fontFamily: Typography.fontFamily,
-                  padding: 10,
-                  color: Colors.lightText,
-                  width: "100%",
-                  height: 130,
-                  backgroundColor: Colors.nestedDark,
-                  textAlign: "center", // horizontal centering
-                  textAlignVertical:
-                    Platform.OS === "android" ? "center" : undefined,
-                  paddingTop: Platform.OS === "ios" ? 45 : 0, // adjust to half of height minus font size
-                }}
-                multiline
-                placeholder="What insights did you gain from today's content? How will you apply this?"
-                placeholderTextColor={Colors.textSecondary}
-                onChangeText={(text) => {
-                  setComments(text);
-                }}
-              />
-            </>
-          )}
-          {/* Action Buttons */}
-          {details.userTaskStatus !== "COMPLETED" ? (
-            <>
-              <View style={{ width: "100%", flexDirection: "column" }}>
-                <SolidButton
-                  title="Mark  Complete"
-                  onPress={() => handleChangeTaskStatus("COMPLETED")}
+                          <FontAwesome
+                            name="circle"
+                            size={10}
+                            color={mainColor}
+                            style={{ marginRight: 8, marginTop: 6 }}
+                          />
+                          <Text
+                            key={index}
+                            style={{
+                              fontSize: 16,
+                              color: Colors.textSecondary,
+                              paddingVertical: 0,
+                            }}
+                          >
+                            {child}
+                          </Text>
+                        </View>
+                      ))}
+                    </View>
+                  )}
+              </View>
+            )}
+            {/* key takeaways */}
+            {details.keyTakeaways && details.keyTakeaways.length > 0 && (
+              <>
+                <Text
                   style={{
-                    backgroundColor: mainColor,
-                    marginTop: 24,
+                    fontSize: 16,
+                    fontFamily: Typography.fontFamilyMedium,
+                    marginBottom: 8,
+                    color: Colors.text,
+                  }}
+                >
+                  Key Takeaways
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 14,
+                    color: Colors.textSecondary,
+                  }}
+                >
+                  {details.keyTakeaways &&
+                    details.keyTakeaways.map((item, index) => {
+                      return (
+                        <View
+                          key={index}
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "flex-start",
+                          }}
+                        >
+                          <FontAwesome
+                            name="circle"
+                            size={10}
+                            color={mainColor}
+                            style={{ marginRight: 8, marginTop: 6 }}
+                          />
+                          <Text
+                            style={{
+                              fontSize: 16,
+                              color: Colors.textSecondary,
+                              flex: 1,
+                              flexWrap: "wrap",
+                              paddingVertical: 0,
+                              marginBottom: 6,
+                            }}
+                          >
+                            {item}
+                          </Text>
+                        </View>
+                      );
+                    })}
+                </Text>
+              </>
+            )}
+            {/* Your Reflection */}
+            {details.userTaskStatus !== "COMPLETED" && (
+              <>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontFamily: Typography.fontFamilyMedium,
+                    marginBottom: 8,
+                    color: Colors.text,
+                  }}
+                >
+                  Your Reflection
+                </Text>
+                <TextInput
+                  style={{
+                    borderRadius: 12,
+                    fontSize: 16,
+                    fontFamily: Typography.fontFamily,
+                    padding: 10,
+                    color: Colors.lightText,
                     width: "100%",
+                    height: 130,
+                    backgroundColor: Colors.nestedDark,
+                    textAlign: "center", // horizontal centering
+                    textAlignVertical:
+                      Platform.OS === "android" ? "center" : undefined,
+                    paddingTop: Platform.OS === "ios" ? 45 : 0, // adjust to half of height minus font size
+                  }}
+                  multiline
+                  placeholder="What insights did you gain from today's content? How will you apply this?"
+                  placeholderTextColor={Colors.textSecondary}
+                  onChangeText={(text) => {
+                    setComments(text);
                   }}
                 />
-                {/* <View
+              </>
+            )}
+            {/* Action Buttons */}
+            {details.userTaskStatus !== "COMPLETED" ? (
+              <>
+                <View style={{ width: "100%", flexDirection: "column" }}>
+                  <SolidButton
+                    title="Mark  Complete"
+                    onPress={() => handleChangeTaskStatus("COMPLETED")}
+                    style={{
+                      backgroundColor: mainColor,
+                      marginTop: 24,
+                      width: "100%",
+                    }}
+                  />
+                  {/* <View
               style={{
                 flex: 1,
                 flexDirection: "row",
@@ -653,21 +666,22 @@ const TaskDetails = () => {
                 />
               )}
             </View> */}
-              </View>
-            </>
-          ) : (
-            <SolidButton
-              title="Completed"
-              onPress={() => handleChangeTaskStatus("PENDING")}
-              style={{
-                backgroundColor: Colors.nestedDark,
-                marginTop: 24,
-                width: "100%",
-              }}
-            />
-          )}
-        </View>
-      </ScrollView>
+                </View>
+              </>
+            ) : (
+              <SolidButton
+                title="Completed"
+                onPress={() => handleChangeTaskStatus("PENDING")}
+                style={{
+                  backgroundColor: Colors.nestedDark,
+                  marginTop: 24,
+                  width: "100%",
+                }}
+              />
+            )}
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

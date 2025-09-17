@@ -34,6 +34,29 @@ export const login = createAsyncThunk("auth/login", async (model, thunkAPI) => {
 
     return userDetails;
   } catch (error) {
+    // Handle error, e.g., invalid credentials
+    if (error.code === "auth/invalid-credential") {
+      return thunkAPI.rejectWithValue({
+        message:
+          "Invalid credentials. Please check your username and password.",
+      });
+    }
+
+    if (error.code === "auth/user-not-found") {
+      return thunkAPI.rejectWithValue({
+        message: "User not found. Please check your credentials.",
+      });
+    }
+    if (error.code === "auth/wrong-password") {
+      return thunkAPI.rejectWithValue({
+        message: "Incorrect password. Please try again.",
+      });
+    }
+    if (error.code === "auth/invalid-email") {
+      return thunkAPI.rejectWithValue({
+        message: "Invalid email format. Please enter a valid email.",
+      });
+    }
     return thunkAPI.rejectWithValue(error);
   }
 });
@@ -131,9 +154,10 @@ export const createUserInDb = createAsyncThunk(
 );
 export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
   try {
+    thunkAPI.dispatch({ type: "RESET_APP" });
     // sign out from Firebase
     await getAuth().signOut();
-    thunkAPI.dispatch({ type: "RESET_APP" });
+    // thunkAPI.dispatch({ type: "RESET_APP" });
     return true;
   } catch (error) {
     return thunkAPI.rejectWithValue(error);

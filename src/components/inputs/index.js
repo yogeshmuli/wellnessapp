@@ -48,7 +48,7 @@ const Pill = ({
       <Text
         style={{
           color: isAddMore ? Colors.text : Colors.white,
-          fontWeight: "500",
+          fontFamily: Typography.fontFamilyMedium,
           fontSize: 14,
         }}
       >
@@ -58,7 +58,7 @@ const Pill = ({
         <Text
           style={{
             color: Colors.white,
-            fontWeight: "bold",
+            fontFamily: Typography.fontFamilyMedium,
           }}
         >
           ×
@@ -297,7 +297,14 @@ export const MultiSelectInput = ({
   );
 };
 
-export const SelectInput = ({ label, value, onChange, options, error }) => {
+export const SelectInput = ({
+  label,
+  value,
+  onChange,
+  options,
+  error,
+  disabled,
+}) => {
   const [showOptions, setShowOptions] = useState(false);
   const { Colors } = useTheme();
 
@@ -318,6 +325,7 @@ export const SelectInput = ({ label, value, onChange, options, error }) => {
         {label}
       </Text>
       <TouchableOpacity
+        disabled={disabled}
         onPress={() => setShowOptions(true)}
         style={{
           height: 50,
@@ -326,7 +334,9 @@ export const SelectInput = ({ label, value, onChange, options, error }) => {
           borderRadius: 12,
           paddingHorizontal: 10,
           backgroundColor: Colors.lightBodyBackground,
-          justifyContent: "center",
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
         <Text
@@ -338,75 +348,71 @@ export const SelectInput = ({ label, value, onChange, options, error }) => {
         >
           {value?.label || "Select an option"}
         </Text>
+        {!disabled && (
+          <Ionicons name="chevron-down" size={20} color={Colors.lightText} />
+        )}
       </TouchableOpacity>
 
-      <Modal visible={showOptions} animationType="slide" transparent={true}>
-        <TouchableWithoutFeedback onPress={() => setShowOptions(false)}>
+      <BottomSheetModal
+        visible={showOptions}
+        onClose={() => setShowOptions(false)}
+      >
+        <View
+          style={{
+            backgroundColor: Colors.bodyBackground,
+
+            borderTopLeftRadius: 16,
+            borderTopRightRadius: 16,
+            padding: 20,
+          }}
+        >
           <View
             style={{
-              flex: 1,
-              backgroundColor: "rgba(0,0,0,0.5)",
-              justifyContent: "flex-end",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
           >
-            <View
+            <Text
               style={{
-                backgroundColor: Colors.bodyBackground,
-                maxHeight: "50%",
-                borderTopLeftRadius: 16,
-                borderTopRightRadius: 16,
-                padding: 20,
+                fontSize: Typography.fontSizeLarge,
+                fontFamily: Typography.fontFamilyBold,
+                color: Colors.text,
+                marginBottom: Spacing.small,
               }}
             >
-              <View
+              {`Select ${label}`}
+            </Text>
+            {/* close icon */}
+            <TouchableOpacity onPress={() => setShowOptions(false)}>
+              <Ionicons name="close" size={24} color={Colors.text} />
+            </TouchableOpacity>
+          </View>
+          <ScrollView>
+            {options.map((option) => (
+              <TouchableOpacity
+                key={option.value}
+                onPress={() => handleSelect(option)}
                 style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
+                  paddingVertical: 12,
+                  borderBottomWidth: 1,
+                  borderBottomColor: Colors.lightBorder,
                 }}
               >
                 <Text
                   style={{
-                    fontSize: Typography.fontSizeLarge,
-                    fontFamily: Typography.fontFamilyBold,
+                    fontSize: Typography.fontSizeMedium,
                     color: Colors.text,
-                    marginBottom: Spacing.small,
+                    fontFamily: Typography.fontFamily,
                   }}
                 >
-                  {`Select ${label}`}
+                  {option.label}
                 </Text>
-                {/* close icon */}
-                <TouchableOpacity onPress={() => setShowOptions(false)}>
-                  <Ionicons name="close" size={24} color={Colors.text} />
-                </TouchableOpacity>
-              </View>
-              <ScrollView>
-                {options.map((option) => (
-                  <TouchableOpacity
-                    key={option.value}
-                    onPress={() => handleSelect(option)}
-                    style={{
-                      paddingVertical: 12,
-                      borderBottomWidth: 1,
-                      borderBottomColor: Colors.lightBorder,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: Typography.fontSizeMedium,
-                        color: Colors.text,
-                        fontFamily: Typography.fontFamily,
-                      }}
-                    >
-                      {option.label}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </ScrollView>
-            </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
+              </TouchableOpacity>
+            ))}
+          </ScrollView>
+        </View>
+      </BottomSheetModal>
 
       {error ? (
         <Text style={{ color: Colors.error, marginTop: 4 }}>{error}</Text>
@@ -503,7 +509,7 @@ export const CustomEditableInput = ({
   style = {},
   textStyle = {},
   inputStyle = {},
-  iconColor = Colors.primary,
+  iconColor,
   disableEditing = false,
 }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -588,7 +594,7 @@ export const CustomEditableInput = ({
         <Ionicons
           name={isEditing ? "checkmark-outline" : "create-outline"}
           size={22}
-          color={iconColor}
+          color={iconColor ? iconColor : Colors.primary}
           style={{ marginLeft: 8 }}
         />
       </TouchableOpacity>
@@ -607,6 +613,7 @@ export const CustomInput = ({
   disableEditing = false,
   style = {},
   textStyle = {},
+  iconColor,
   inputStyle = {},
 }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -692,7 +699,7 @@ export const CustomInput = ({
           <Octicons
             name={isEditing ? "check" : "pencil"}
             size={22}
-            color={iconColor}
+            color={iconColor ? iconColor : Colors.primary}
             style={{ marginLeft: 8 }}
           />
         </TouchableOpacity>

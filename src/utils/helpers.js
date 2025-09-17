@@ -11,33 +11,41 @@ export function toTitleCase(str) {
 }
 
 export function getColorByFocusArea(focusArea) {
-  switch (focusArea) {
-    case "health_vitality":
-      return Colors.q1;
-    case "inner_growth":
-      return Colors.q2;
-    case "relationships":
-      return Colors.q3;
-    case "wealth":
-      return Colors.q4;
-    default:
-      return Colors.primary;
+  if (focusArea?.color) {
+    return focusArea.color;
   }
+  return Colors.primary;
+  // switch (focusArea) {
+  //   case "health_vitality":
+  //     return Colors.q1;
+  //   case "inner_growth":
+  //     return Colors.q2;
+  //   case "relationships":
+  //     return Colors.q3;
+  //   case "wealth":
+  //     return Colors.q4;
+  //   default:
+  //     return Colors.primary;
+  // }
 }
 
 export function getIconByFocusArea(focusArea) {
-  switch (focusArea) {
-    case "health_vitality":
-      return "heartbeat";
-    case "inner_growth":
-      return "brain";
-    case "relationships":
-      return "users";
-    case "wealth":
-      return "chart-line";
-    default:
-      return "star";
+  if (focusArea.icon) {
+    return focusArea.icon;
   }
+  return "star";
+  // switch (focusArea) {
+  //   case "health_vitality":
+  //     return "heartbeat";
+  //   case "inner_growth":
+  //     return "brain";
+  //   case "relationships":
+  //     return "users";
+  //   case "wealth":
+  //     return "chart-line";
+  //   default:
+  //     return "star";
+  // }
 }
 
 export const formatTime = (timeInSeconds) => {

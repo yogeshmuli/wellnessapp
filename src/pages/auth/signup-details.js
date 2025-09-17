@@ -16,6 +16,7 @@ import {
 } from "../../constants/index";
 import SafeAreaView from "../../components/safearea";
 import { useTheme } from "../../hooks/useTheme";
+import Toast from "react-native-toast-message";
 
 // Validation function for details
 const validate = (name, value) => {
@@ -50,10 +51,7 @@ const SignupDetails = () => {
       fullname: "",
       age: "",
       focusAreas: [],
-      fitnessLevel: {
-        label: "Beginner",
-        value: "beginner",
-      },
+      fitnessLevel: { label: "Beginner", value: "BEGINNER" },
     },
     validate
   );
@@ -77,8 +75,11 @@ const SignupDetails = () => {
         setLoading(false);
       } catch (error) {
         setLoading(false);
-        console.error("Signup failed:", error);
-        // Handle error, e.g., show a toast message
+        Toast.show({
+          type: "error",
+          text1: "Signup Failed",
+          text2: error.message || "An error occurred during signup.",
+        });
       }
     });
   };

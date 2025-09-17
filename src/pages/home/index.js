@@ -16,7 +16,7 @@ import {
 } from "../../redux/thunks/user";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Avatars } from "../../components/avatars";
+import { AsyncImage, Avatars } from "../../components/avatars";
 import { Spacing, Typography } from "../../styles";
 import Icon from "react-native-vector-icons/Ionicons";
 import ProgressBar from "../../components/progressbar";
@@ -115,28 +115,32 @@ const Home = () => {
   const navigation = useNavigation();
   const { Colors, changeTheme } = useTheme();
 
-  useEffect(() => {
-    fetchDataWithLoading();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchDataWithLoading();
+    }, [])
+  );
 
   const fetchDataWithLoading = async () => {
     setLoading(true);
-    await getUserDetails();
-    await getUserFeedDetails();
-    await getLeaderboardDetails();
+    await Promise.all([
+      getUserDetails(),
+      // getUserFeedDetails(),
+      getLeaderboardDetails(),
+    ]);
     setLoading(false);
   };
 
-  const getUserFeedDetails = async () => {
-    try {
-      let userFeed = await dispatch(getUserFeed()).unwrap();
-      // Do something with userFeed if needed
-      console.log("User feed fetched successfully:", userFeed);
-      setUserFeed(userFeed);
-    } catch (error) {
-      console.error("Failed to fetch user feed:", error);
-    }
-  };
+  // const getUserFeedDetails = async () => {
+  //   try {
+  //     let userFeed = await dispatch(getUserFeed()).unwrap();
+  //     // Do something with userFeed if needed
+  //     console.log("User feed fetched successfully:", userFeed);
+  //     setUserFeed(userFeed);
+  //   } catch (error) {
+  //     console.error("Failed to fetch user feed:", error);
+  //   }
+  // };
 
   const getLeaderboardDetails = async () => {
     try {
@@ -163,7 +167,7 @@ const Home = () => {
     console.log("Refreshing user details...");
     setRefreshing(true);
     await getUserDetails();
-    await getUserFeedDetails();
+    // await getUserFeedDetails();
     setRefreshing(false);
   }, []);
 
@@ -182,7 +186,7 @@ const Home = () => {
     <>
       <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bodyBackground }}>
         {/* <LoadingOverlay visible={loading} /> */}
-        {loading && userFeed.length === 0 && (
+        {/* {loading && userFeed.length === 0 && (
           <View
             style={{
               position: "absolute",
@@ -199,7 +203,7 @@ const Home = () => {
           >
             <ActivityIndicator />
           </View>
-        )}
+        )} */}
         <View
           style={{
             flexDirection: "row",
@@ -208,6 +212,7 @@ const Home = () => {
             paddingHorizontal: 17.5,
             alignItems: "center",
             justifyContent: "space-between",
+            paddingBottom: 16,
           }}
         >
           {/* Avatar */}
@@ -227,12 +232,18 @@ const Home = () => {
             )}
           </TouchableOpacity>
           {/* greeting div */}
-          <View>
+          <View
+            style={{
+              flex: 1,
+              flexShrink: 1,
+              paddingLeft: Spacing.small,
+            }}
+          >
             <Text
               style={{
                 fontSize: 20,
                 lineHeight: 32,
-                fontWeight: Typography.fontWeightBold,
+
                 color: Colors.text,
                 fontFamily: Typography.fontFamilyBold,
                 marginBottom: 4,
@@ -244,7 +255,7 @@ const Home = () => {
                 style={{
                   fontSize: 20,
                   lineHeight: 32,
-                  fontWeight: Typography.fontWeightBold,
+
                   color: Colors.text,
                   fontFamily: Typography.fontFamilyBold,
                   marginBottom: 4,
@@ -309,24 +320,21 @@ const Home = () => {
                 <View
                   style={{
                     marginTop: Spacing.large,
-                    padding: Spacing.large,
+
                     backgroundColor: Colors.cardBackground,
                     borderRadius: 8,
                     width: "100%",
-                    height: 128,
+                    height: 200,
                     justifyContent: "center",
                     alignItems: "center",
+                    overflow: "hidden",
                   }}
                 >
-                  <Text
-                    style={{
-                      fontSize: 18,
-                      color: Colors.lightText,
-                      fontFamily: Typography.fontFamilyRegular,
-                    }}
-                  >
-                    Brotherhood Philosophy
-                  </Text>
+                  <AsyncImage
+                    source={require("../../assets/concept.jpg")}
+                    style={{ width: "100%", height: 200 }}
+                    resizeMode="stretch" // or "contain", "stretch", etc.
+                  />
                 </View>
                 {/* master you life */}
                 <View
@@ -492,13 +500,13 @@ const Home = () => {
                             }}
                           >
                             <FontAwsomeIcon5
-                              name={getIconByFocusArea(item.name)}
+                              name={getIconByFocusArea(item)}
                               size={30}
-                              color={getColorByFocusArea(item.name)}
+                              color={getColorByFocusArea(item)}
                             />
                             <Text
                               style={{
-                                backgroundColor: getColorByFocusArea(item.name),
+                                backgroundColor: getColorByFocusArea(item),
                                 color: Colors.white,
                                 fontFamily: Typography.fontFamilyBold,
                                 paddingHorizontal: 8,
@@ -527,7 +535,7 @@ const Home = () => {
                           <View style={{ width: "100%" }}>
                             <ProgressBar
                               progress={parseInt(item.totalProgress) || 0}
-                              color={getColorByFocusArea(item.name)}
+                              color={getColorByFocusArea(item)}
                               height={8}
                             />
                           </View>
@@ -581,12 +589,12 @@ const Home = () => {
                         }}
                       >
                         <FontAwsomeIcon5
-                          name={getIconByFocusArea(habit.focusArea.name)}
+                          name={getIconByFocusArea(habit.focusArea)}
                           size={20}
                           color={Colors.white}
                           style={{
                             backgroundColor: getColorByFocusArea(
-                              habit.focusArea.name
+                              habit.focusArea
                             ),
                             width: 40,
                             height: 40,

@@ -164,7 +164,7 @@ const NotificationScreen = () => {
         break;
     }
   };
-  console.log("Notifications:", notifications);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.bodyBackground }}>
       <View style={{ flex: 1, paddingHorizontal: 17.5 }}>
@@ -188,7 +188,7 @@ const NotificationScreen = () => {
             <Text
               style={{
                 fontSize: Typography.fontSizeLarge,
-                fontWeight: "bold",
+                fontFamily: Typography.fontFamilyBold,
                 marginLeft: 5,
               }}
             >
@@ -198,6 +198,7 @@ const NotificationScreen = () => {
         </View>
         <View style={{ flex: 1 }}>
           <ScrollView
+            showsVerticalScrollIndicator={false}
             contentContainerStyle={{
               alignItems: "center",
               justifyContent: "flex-start",

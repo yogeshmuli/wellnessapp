@@ -33,7 +33,7 @@ const HabitDetails = () => {
   const { habit: habitFromRoute } = route.params;
   const [habit, setHabit] = React.useState(habitFromRoute);
   const { Colors } = useTheme();
-  const mainColor = getColorByFocusArea(habit?.focusArea?.name);
+  const mainColor = getColorByFocusArea(habit?.focusArea);
 
   const onEnrollInHabit = async () => {
     try {
@@ -140,7 +140,7 @@ const HabitDetails = () => {
               <Text
                 style={{
                   fontSize: 20,
-                  fontWeight: "bold",
+                  fontFamily: Typography.fontFamilyBold,
                   marginLeft: 10,
                   paddingLeft: 0,
                   color: Colors.text,

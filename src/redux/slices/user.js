@@ -25,9 +25,7 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(RESET_APP, (state) => {
-        state = initialState;
-      })
+      .addCase(RESET_APP, (state) => initialState)
       .addCase(updateUserProfile.pending, (state) => {
         state.loading = true;
         state.error = null;

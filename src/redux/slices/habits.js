@@ -15,7 +15,7 @@ const habitsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(RESET_APP, (state) => {
-        state = initialState;
+        return initialState;
       })
       .addCase(fetchHabits.pending, (state) => {
         state.loading = true;

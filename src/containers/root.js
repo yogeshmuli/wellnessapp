@@ -32,7 +32,7 @@ const toastConfig = {
       contentContainerStyle={{ paddingHorizontal: 15 }}
       text1Style={{
         fontSize: Typography.fontSizeMedium,
-        fontWeight: Typography.fontWeightBold,
+
         color: Colors.success,
         fontFamily: Typography.fontFamilyBold,
       }}
@@ -49,14 +49,16 @@ const toastConfig = {
       style={{ borderLeftColor: "#d32f2f", backgroundColor: "#fff0f0" }}
       text1Style={{
         fontSize: Typography.fontSizeMedium,
-        fontWeight: Typography.fontWeightBold,
+
         color: "#d32f2f",
         fontFamily: Typography.fontFamilyBold,
       }}
+      text2NumberOfLines={5}
       text2Style={{
         fontSize: Typography.fontSizeSmall,
         color: "#d32f2f",
         fontFamily: Typography.fontFamilyRegular,
+        flexWrap: "wrap",
       }}
     />
   ),

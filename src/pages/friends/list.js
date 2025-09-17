@@ -235,7 +235,7 @@ const FriendsList = () => {
                         <Text
                           style={{
                             fontSize: Typography.fontSizeMedium,
-                            fontWeight: "bold",
+                            fontFamily: Typography.fontFamilyBold,
                             marginBottom: Spacing.small,
                             color: Colors.text,
                             fontFamily: Typography.fontFamilyBold,
@@ -339,7 +339,7 @@ const FriendsList = () => {
                     <Text
                       style={{
                         fontSize: Typography.fontSizeMedium,
-                        fontWeight: "bold",
+                        fontFamily: Typography.fontFamilyBold,
                         marginBottom: Spacing.small,
                         color: Colors.text,
                         fontFamily: Typography.fontFamilyBold,

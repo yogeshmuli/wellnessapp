@@ -112,7 +112,7 @@ const HabitsList = () => {
           <Text
             style={{
               fontSize: Typography.fontSizeLarge,
-              fontWeight: "bold",
+              fontFamily: Typography.fontFamilyBold,
               color: Colors.text,
               paddingHorizontal: 0,
             }}
@@ -133,7 +133,7 @@ const HabitsList = () => {
               </Text>
               <View>
                 {activeHabits.map((habit, key) => {
-                  const mainColor = getColorByFocusArea(habit.focusArea?.name);
+                  const mainColor = getColorByFocusArea(habit.focusArea);
                   return (
                     <TouchableOpacity
                       key={key}
@@ -149,6 +149,7 @@ const HabitsList = () => {
                           padding: Spacing.medium,
 
                           width: "100%",
+                          marginBottom: Spacing.medium,
                         }}
                       >
                         <View
@@ -159,12 +160,12 @@ const HabitsList = () => {
                           }}
                         >
                           <Icon
-                            name={getIconByFocusArea(habit.focusArea?.name)}
+                            name={getIconByFocusArea(habit.focusArea)}
                             size={20}
                             color={Colors.white}
                             style={{
                               backgroundColor: getColorByFocusArea(
-                                habit.focusArea.name
+                                habit.focusArea
                               ),
                               width: 40,
                               height: 40,
@@ -221,7 +222,7 @@ const HabitsList = () => {
                 }}
               >
                 {availableHabits.map((habit, key) => {
-                  let mainColor = getColorByFocusArea(habit.focusArea?.name);
+                  let mainColor = getColorByFocusArea(habit.focusArea);
                   return (
                     <TouchableOpacity
                       key={key}
@@ -237,15 +238,16 @@ const HabitsList = () => {
                           paddingHorizontal: Spacing.medium,
                           paddingVertical: Spacing.medium,
                           width: "100%",
+                          marginBottom: Spacing.medium,
                         }}
                       >
                         <Icon
-                          name={getIconByFocusArea(habit.focusArea?.name)}
+                          name={getIconByFocusArea(habit.focusArea)}
                           size={16}
                           color={Colors.white}
                           style={{
                             backgroundColor: getColorByFocusArea(
-                              habit.focusArea.name
+                              habit.focusArea
                             ),
                             width: 40,
                             height: 40,
@@ -262,7 +264,6 @@ const HabitsList = () => {
                             alignItems: "flex-start",
                             flex: 1,
                             justifyContent: "flex-start",
-                            paddingHorizontal: Spacing.medium,
                           }}
                         >
                           <Text
@@ -280,12 +281,14 @@ const HabitsList = () => {
                             style={{
                               flexDirection: "row",
                               marginTop: Spacing.small,
+                              flexWrap: "wrap",
+                              gap: 6, // adds both row and column gap
                             }}
                           >
                             <View
                               style={{
                                 marginRight: Spacing.small,
-                                backgroundColor: Colors.lightBodyBackground,
+                                backgroundColor: mainColor,
                                 borderRadius: 6,
                               }}
                             >
@@ -304,6 +307,7 @@ const HabitsList = () => {
                             <View
                               style={{
                                 marginRight: Spacing.small,
+
                                 backgroundColor: Colors.lightBodyBackground,
                                 borderRadius: 6,
                               }}
@@ -332,7 +336,7 @@ const HabitsList = () => {
                               alignItems: "center",
                             }}
                           >
-                            <Icon name="plus" size={16} color={Colors.text} />
+                            <Icon name="plus" size={16} color={Colors.white} />
                           </View>
                         </TouchableOpacity>
                       </View>

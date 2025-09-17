@@ -15,7 +15,7 @@ const challengeSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(RESET_APP, (state) => {
-        state = initialState;
+        return initialState;
       })
       .addCase(fetchChallenges.pending, (state) => {
         state.loading = true;

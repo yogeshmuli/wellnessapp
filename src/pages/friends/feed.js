@@ -40,7 +40,7 @@ const FriendsFeed = () => {
               <Text
                 style={{
                   fontSize: 20,
-                  fontWeight: "bold",
+                  fontFamily: Typography.fontFamilyBold,
                   marginLeft: 0,
                   paddingLeft: 0,
                   color: Colors.text,

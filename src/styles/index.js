@@ -41,11 +41,10 @@ export const Colors = {
   body: "#F8F9FE",
 };
 export const ColorsLight = {
-  bodyBackground: "#F9FAFB", // very light gray background
-  lightBodyBackground: "#E5E7EB", // subtle gray for sections
-  cardBackground: "#FFFFFF", // pure white for cards
+  bodyBackground: "#FFFFFF", // a bit darker gray
+  cardBackground: "#F3F4F6", // pure white (keeps it crisp)
   lightBorder: "#D1D5DB", // light neutral border
-  nestedDark: "#F3F4F6", // soft gray for nested elements
+  nestedDark: "#FFFFFF",
   text: "#111827",
   lightText: "#6B7280",
   textSecondary: "#6B7280",
@@ -90,7 +89,7 @@ export const Typography = {
   fontFamilyItalic: "Montserrat-Italic",
   fontFamilyLight: "Montserrat-Light",
   fontFamilyMedium: "Montserrat-Medium",
-  fontFamily: "Montserrat",
+  fontFamily: "Montserrat-Regular",
   fontFamilyLightItalic: "Montserrat-LightItalic",
   fontFamilyMediumItalic: "Montserrat-MediumItalic",
   fontFamilyBoldItalic: "Montserrat-BoldItalic",

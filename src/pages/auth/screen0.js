@@ -104,14 +104,12 @@ const OnboardingScreen = () => {
               style={{
                 textAlign: "center",
                 fontSize: 36,
-                fontWeight: "bold",
+                fontFamily: Typography.fontFamilyBold,
                 marginBottom: Spacing.small,
               }}
             >
               Welcome to the{" "}
-              <Text style={{ color: Colors.q4, fontSize: 36 }}>
-                Brotherhood
-              </Text>
+              <Text style={{ color: Colors.q4, fontSize: 36 }}>memberhood</Text>
             </Text>
             <Text
               style={{
@@ -125,7 +123,7 @@ const OnboardingScreen = () => {
               }}
             >
               Transform yourself into the complete man you're destined to
-              become. Join thousands of brothers on their journey to excellence.
+              become. Join thousands of members on their journey to excellence.
             </Text>
             <SolidButton
               style={{ width: 350 }}
@@ -144,13 +142,13 @@ const OnboardingScreen = () => {
                   marginTop: Spacing.small,
                 }}
               >
-                Already a brother?{" "}
+                Already a Member?{" "}
                 <Text
                   style={{
                     fontSize: 14,
                     lineHeight: 20,
                     color: Colors.primary,
-                    fontWeight: Typography.fontWeightBold,
+                    fontFamily: Typography.fontFamilyMedium,
                   }}
                 >
                   Sign In
@@ -190,7 +188,7 @@ const OnboardingScreen = () => {
               style={{
                 fontSize: 30,
                 lineHeight: 36,
-                fontWeight: Typography.fontWeightBold,
+                fontFamily: Typography.fontFamilyMedium,
                 marginTop: Spacing.small,
               }}
             >
@@ -244,7 +242,7 @@ const OnboardingScreen = () => {
               style={{
                 fontSize: 30,
                 lineHeight: 36,
-                fontWeight: Typography.fontWeightBold,
+                fontFamily: Typography.fontFamilyMedium,
                 marginTop: Spacing.small,
               }}
             >
@@ -299,7 +297,7 @@ const OnboardingScreen = () => {
               style={{
                 fontSize: 30,
                 lineHeight: 36,
-                fontWeight: Typography.fontWeightBold,
+                fontFamily: Typography.fontFamilyMedium,
                 marginTop: Spacing.small,
                 textAlign: "center",
               }}
@@ -353,7 +351,7 @@ const OnboardingScreen = () => {
               style={{
                 fontSize: 30,
                 lineHeight: 36,
-                fontWeight: Typography.fontWeightBold,
+                fontFamily: Typography.fontFamilyMedium,
                 marginTop: Spacing.small,
               }}
             >
@@ -404,7 +402,7 @@ const OnboardingScreen = () => {
               <Text
                 style={{
                   color: Colors.primary,
-                  fontWeight: Typography.fontWeightBold,
+                  fontFamily: Typography.fontFamilyMedium,
 
                   textAlign: "center",
                 }}

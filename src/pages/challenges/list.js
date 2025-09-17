@@ -20,7 +20,7 @@ import { useTheme } from "../../hooks/useTheme";
 
 const ChallengeCard = ({ challenge, onPress, onJoin }) => {
   const { Colors } = useTheme();
-  const color = getColorByFocusArea(challenge?.focusArea?.name);
+  const color = getColorByFocusArea(challenge?.focusArea);
   const challengeStatus = challenge?.challengeStatus;
   return (
     <TouchableOpacity onPress={onPress}>
@@ -38,7 +38,7 @@ const ChallengeCard = ({ challenge, onPress, onJoin }) => {
         <Text
           style={{
             fontSize: 18,
-            fontWeight: Typography.fontWeightBold,
+            fontFamily: Typography.fontFamilyBold,
             paddingHorizontal: 0,
           }}
         >
@@ -92,7 +92,7 @@ const ChallengeCard = ({ challenge, onPress, onJoin }) => {
               <Text style={{ paddingHorizontal: 0, color: Colors.lightText }}>
                 Progress
               </Text>
-              <Text style={{ color, fontWeight: Typography.fontWeightMedium }}>
+              <Text style={{ color, fontFamily: Typography.fontFamilyMedium }}>
                 {challenge.challengeProgress
                   ? `${challenge.challengeProgress}%`
                   : "0%"}
@@ -334,7 +334,7 @@ const ChallengesList = () => {
               <Text
                 style={{
                   fontSize: 20,
-                  fontWeight: "bold",
+                  fontFamily: Typography.fontFamilyBold,
                   marginLeft: 0,
                   paddingLeft: 0,
                   color: Colors.text,

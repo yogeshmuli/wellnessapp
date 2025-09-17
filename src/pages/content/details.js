@@ -441,7 +441,7 @@ const ContentDetails = () => {
           <Text
             style={{
               fontSize: Typography.fontSizeLarge,
-              fontWeight: "bold",
+              fontFamily: Typography.fontFamilyBold,
               marginLeft: Spacing.small,
             }}
           >

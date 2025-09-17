@@ -80,7 +80,7 @@ const Signup = () => {
                   textAlign: "center",
                 }}
               >
-                Step Into The Brotherhood
+                Step Into The Journey
               </Text>
               <Text
                 style={{

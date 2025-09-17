@@ -5,14 +5,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = React.useState(Colors);
+  const [themeMode, setThemeMode] = React.useState("dark");
 
   useEffect(() => {
     AsyncStorage.getItem("themePreference").then((res) => {
       if (res) {
         if (res == "dark") {
           setTheme(Colors);
+          setThemeMode("dark");
         } else {
           setTheme(ColorsLight);
+          setThemeMode("light");
         }
       }
     });
@@ -26,8 +29,10 @@ export const ThemeProvider = ({ children }) => {
     AsyncStorage.setItem("themePreference", newTheme);
     if (newTheme == "dark") {
       setTheme(Colors);
+      setThemeMode("dark");
     } else {
       setTheme(ColorsLight);
+      setThemeMode("light");
     }
   };
 
@@ -37,6 +42,7 @@ export const ThemeProvider = ({ children }) => {
         Colors: theme,
         changeTheme,
         getActiveTheme,
+        themeMode,
       }}
     >
       {children}

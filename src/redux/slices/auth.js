@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { login, createUser, logout as LogoutThunk } from "../thunks/auth";
-import Toast from "react-native-toast-message";
+
 import { RESET_APP } from "./global";
 
 const initialState = {
@@ -41,19 +41,9 @@ const authSlice = createSlice({
       .addCase(login.fulfilled, (state, action) => {
         authSlice.caseReducers.setUser(state, action);
         // Handle login success if needed
-        Toast.show({
-          type: "success",
-          text1: "Login Successful",
-          text2: "Welcome back!",
-        });
       })
       .addCase(login.rejected, (state, action) => {
         state.error = action.payload.message;
-        Toast.show({
-          type: "error",
-          text1: "Login Failed",
-          text2: action.payload.message,
-        });
       })
       .addCase(createUser.pending, (state) => {
         state.registrationInProgress = true;
@@ -66,28 +56,13 @@ const authSlice = createSlice({
       })
       .addCase(createUser.rejected, (state, action) => {
         state.error = action.payload.message;
-        Toast.show({
-          type: "error",
-          text1: "User Creation Failed",
-          text2: action.payload.message,
-        });
       })
       .addCase(LogoutThunk.fulfilled, (state) => {
         authSlice.caseReducers.logout(state);
         // Handle logout success if needed
-        Toast.show({
-          type: "success",
-          text1: "Logout Successful",
-          text2: "You have been logged out.",
-        });
       })
       .addCase(LogoutThunk.rejected, (state, action) => {
         state.error = action.payload.message;
-        Toast.show({
-          type: "error",
-          text1: "Logout Failed",
-          text2: action.payload.message,
-        });
       });
   },
 });

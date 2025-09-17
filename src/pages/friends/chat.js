@@ -12,6 +12,7 @@ import {
   Send,
   Actions,
   Bubble,
+  Time,
 } from "react-native-gifted-chat";
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { getConversation, getMessages } from "../../redux/thunks/friends";
@@ -198,7 +199,7 @@ function FriendChat() {
                 <Text
                   style={{
                     fontSize: 16,
-                    fontWeight: Typography.fontFamilyBold,
+                    fontFamily: Typography.fontFamilyBold,
                     marginLeft: Spacing.medium,
                   }}
                 >
@@ -207,12 +208,8 @@ function FriendChat() {
               </View>
             </TouchableOpacity>
           </View>
+
           <GiftedChat
-            // messagesContainerStyle={{
-            //   flex: 1,
-            //   marginTop: Spacing.medium,
-            //   backgroundColor: "blue",
-            // }}
             renderInputToolbar={(props) => <CustomInputToolbar {...props} />}
             onSend={onSend}
             messages={messages}
@@ -220,9 +217,32 @@ function FriendChat() {
             bottomOffset={0}
             alwaysShowSend={true}
             isKeyboardInternallyHandled={false}
+            renderTime={(props) => (
+              <Time
+                {...props}
+                timeTextStyle={{
+                  left: {
+                    color: "black", // Change to your desired color for received messages
+                    fontFamily: Typography.fontFamilyMedium,
+                  },
+                  right: {
+                    color: Colors.white, // Change to your desired color for sent messages
+                    fontFamily: Typography.fontFamilyMedium,
+                  },
+                }}
+              />
+            )}
             renderBubble={(props) => (
               <Bubble
                 {...props}
+                textStyle={{
+                  right: {
+                    fontFamily: Typography.fontFamilyMedium,
+                  },
+                  left: {
+                    fontFamily: Typography.fontFamilyMedium,
+                  },
+                }}
                 wrapperStyle={{
                   right: {
                     backgroundColor: Colors.primary,

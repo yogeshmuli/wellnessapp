@@ -31,11 +31,12 @@ import SafeAreaView from "../../components/safearea";
 import { getColorByFocusArea } from "../../utils/helpers";
 import ProgressBar from "../../components/progressbar";
 import { useTheme } from "../../hooks/useTheme";
+import Toast from "react-native-toast-message";
 
 const TaskCard = ({ task, mainColor, onClick }) => {
   const { Colors } = useTheme();
   return (
-    <TouchableOpacity onPress={onClick}>
+    <TouchableOpacity style={{ width: "100%" }} onPress={onClick}>
       <View
         style={{
           backgroundColor: Colors.cardBackground,
@@ -128,11 +129,18 @@ const ChallengesDetails = () => {
   };
 
   const handleTaskClick = (task) => {
+    if (challengeDetails?.challengeStatus === "NOT_ENROLLED") {
+      Toast.show({
+        type: "info",
+        text1: "Please join the challenge to access tasks.",
+      });
+      return;
+    }
     navigation.navigate("TaskDetails", {
       task: task,
       totalTasks: challengeDetails.totalTasks,
       challengeId: challengeDetails.id,
-      mainColor: getColorByFocusArea(challengeDetails?.focusArea?.name),
+      mainColor: getColorByFocusArea(challengeDetails?.focusArea),
     });
   };
 
@@ -191,7 +199,7 @@ const ChallengesDetails = () => {
     }
   };
 
-  const mainColor = getColorByFocusArea(challengeDetails?.focusArea?.name);
+  const mainColor = getColorByFocusArea(challengeDetails?.focusArea);
 
   return (
     <>
@@ -227,7 +235,7 @@ const ChallengesDetails = () => {
                 <Text
                   style={{
                     fontSize: 20,
-                    fontWeight: "bold",
+                    fontFamily: Typography.fontFamilyBold,
                     marginLeft: 10,
                     paddingLeft: 0,
                     color: Colors.text,
@@ -248,7 +256,7 @@ const ChallengesDetails = () => {
               <Text
                 style={{
                   fontSize: 24,
-                  fontWeight: "bold",
+                  fontFamily: Typography.fontFamilyBold,
                   color: Colors.text,
                   paddingHorizontal: 0,
                 }}
@@ -313,7 +321,7 @@ const ChallengesDetails = () => {
               <Text
                 style={{
                   fontSize: 16,
-                  fontWeight: Typography.fontWeightRegular,
+                  fontFamily: Typography.fontFamilyRegular,
                   color: mainColor,
                   marginTop: Spacing.small,
                   paddingHorizontal: 0,
